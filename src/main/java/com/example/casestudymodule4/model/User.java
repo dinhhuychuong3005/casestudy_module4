@@ -43,7 +43,7 @@ public class User {
     private String gender;
 
     private String avatar;
-    @Column(nullable = false)
+
     private Date dateOfBirth;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
