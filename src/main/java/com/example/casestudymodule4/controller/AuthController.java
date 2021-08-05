@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -54,5 +55,14 @@ public class AuthController {
     public ResponseEntity<User> registerAccount(@RequestBody @Valid User user) {
         userService.save(user);
         return new ResponseEntity<>(userService.findById(user.getId()).get(),HttpStatus.OK);
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<User> deleteSmartphone(@PathVariable Long id) {
+        Optional<User> smartphoneOptional = userService.findById(id);
+        if (!smartphoneOptional.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        userService.remove(id);
+        return new ResponseEntity<>(smartphoneOptional.get(), HttpStatus.NO_CONTENT);
     }
 }
