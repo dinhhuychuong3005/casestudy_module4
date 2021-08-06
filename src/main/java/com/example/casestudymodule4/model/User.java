@@ -26,11 +26,9 @@ public class User {
     @Min(value = 8, message = "Password phải từ 8 kí tự trở lên")
     private String password;
 
-
     @Column(nullable = false)
     @NotEmpty(message = "Thiếu name")
     private String fullName;
-
 
     private String address;
 
@@ -67,11 +65,12 @@ public class User {
         this.roles = roles;
     }
 
-    public User(String username, String password, String fullName) {
+    public User(String username, String password, String fullName ) {
         this.username = username;
         this.password = password;
         this.fullName = fullName;
     }
+
 
     public Long getId() {
         return id;
@@ -161,5 +160,6 @@ public class User {
     public Set<Role> getRoles() {
         return roles;
     }
+
 }
 

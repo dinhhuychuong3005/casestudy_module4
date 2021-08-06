@@ -76,25 +76,40 @@ public class HomeController {
         return new ResponseEntity<>(message,HttpStatus.OK);
     }
 
-    @PutMapping("/editUser/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
-        Optional<User> userOptional = userService.findById(id);
-        if (!userOptional.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        user.setId(userOptional.get().getId());
-        return new ResponseEntity<>(userService.save(user), HttpStatus.OK);
-    }
 
-    @PutMapping("/editPassword/{id}")
+
+    @PutMapping("/editUser/{id}")
     public ResponseEntity<User> updatePassword(@PathVariable Long id, @RequestBody User user) {
         Optional<User> userOptional = userService.findById(id);
         if (!userOptional.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         user.setId(userOptional.get().getId());
-        return new ResponseEntity<>(userService.save(user), HttpStatus.OK);
+        user.setUsername(userOptional.get().getUsername());
+        user.setPassword(userOptional.get().getPassword());
+        user.setFullName(userOptional.get().getFullName());
+        user.setEmail(userOptional.get().getEmail());
+        user.setGender(userOptional.get().getGender());
+
+        userService.save(user);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
+    @PutMapping("/editPassword/{id}")
+    public ResponseEntity<User> editPassword(@PathVariable Long id, @RequestBody User user) {
+        Optional<User> userOptional = userService.findById(id);
+        if (!userOptional.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+
+        user.setPassword(userOptional.get().getPassword());
+        user.setFullName(userOptional.get().getFullName());
+        user.setEmail(userOptional.get().getEmail());
+        user.setGender(userOptional.get().getGender());
+
+        userService.save(user);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
 
 }
