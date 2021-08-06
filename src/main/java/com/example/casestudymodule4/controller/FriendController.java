@@ -27,16 +27,15 @@ public class FriendController {
         Iterable<Friend> listFriend = friendService.findAll();
         return new ResponseEntity<>(listFriend, HttpStatus.OK);
     }
-    @GetMapping("/allMutualFriend/{idUser1}/{idUser2}")
+    @GetMapping("/allMutualFriend/{idUser1}/{idUser2}")// list bạn bè chung
     public ResponseEntity<List<User>> getMutualFriend(@PathVariable Long idUser1,@PathVariable Long idUser2) {
         List<User> listMutualFriend = new ArrayList<>();
         List<User> listUserFriend1 = getListUserFriend(idUser1);
         List<User> listUserFriend2 = getListUserFriend(idUser2);
 
         for (User user1: listUserFriend1){
-            System.out.println(user1.getId() + "thàng 1");
+
             for (User user2:listUserFriend2){
-                System.out.println(user2.getId() + "thàng 2");
                 if (user1.getId() == user2.getId()){
                     listMutualFriend.add(user1);
                 }
@@ -45,7 +44,7 @@ public class FriendController {
 
         return new ResponseEntity<>(listMutualFriend, HttpStatus.OK);
     }
-    @GetMapping("/listFriend/{idUser}")
+    @GetMapping("/listFriend/{idUser}")// list bạn bè của user
     public ResponseEntity<List<com.example.casestudymodule4.model.entity.User>> getAllFriendById(@PathVariable Long idUser) {
         List<User> listUserFriend = getListUserFriend(idUser);
         return new ResponseEntity<>(listUserFriend, HttpStatus.OK);
@@ -54,7 +53,6 @@ public class FriendController {
         List<Friend> listFriend = friendService.findAllFriendById(idUser);
         List<com.example.casestudymodule4.model.entity.User> listUser = new ArrayList<>();
         for (Friend friendEntity: listFriend){
-            System.out.println("id bạn " + friendEntity.getId());
             if (friendEntity.getStatus() != 0){
                 com.example.casestudymodule4.model.entity.User user = userService.findById(friendEntity.getIdFriendOfUser()).get();
                 listUser.add(user);

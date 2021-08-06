@@ -57,8 +57,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().ignoringAntMatchers("/**");
         http.httpBasic().authenticationEntryPoint(restServicesEntryPoint());
         http.authorizeRequests()
-                .antMatchers("/api/register","/api/sendEmail/{email}","/api/login","/api/friend/**").permitAll()
-                .antMatchers("/api/").access("hasRole('ROLE_ADMIN')")
+                .antMatchers("/api/**","/api/register","/api/sendEmail/{email}","/api/login","/api/friend/**").permitAll()
+//                .antMatchers("/api/").access("hasRole('ROLE_ADMIN')")
                 .anyRequest().authenticated()
                 .and().csrf().disable();
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
