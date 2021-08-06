@@ -59,20 +59,20 @@ public class HomeController {
         userService.save(user);
         return new ResponseEntity<>(userService.findById(user.getId()).get(),HttpStatus.OK);
     }
-    @PostMapping("/sendEmail/{email}") //gửi email
-    public ResponseEntity<SimpleMailMessage> sendSimpleEmail(@PathVariable String email) {
-
-        // Create a Simple MailMessage.
-        SimpleMailMessage message = new SimpleMailMessage();
-
-        message.setTo(email);
-        message.setSubject("Test Simple Email");
-        message.setText("Hello, Im testing Simple Email");
-
-        // Send Message!
-        this.javaMailSender.send(message);
-
-        return new ResponseEntity<>(message,HttpStatus.OK);
-    }
+//    @PostMapping("/sendEmail/{email}") //gửi email
+//    public ResponseEntity<SimpleMailMessage> sendSimpleEmail(@PathVariable String email) {
+//
+//        // Create a Simple MailMessage.
+//        SimpleMailMessage message = new SimpleMailMessage();
+//
+//        message.setTo(email);
+//        message.setSubject("Test Simple Email");
+//        message.setText("Hello, Im testing Simple Email");
+//
+//        // Send Message!
+//        this.javaMailSender.send(message);
+//
+//        return new ResponseEntity<>(message,HttpStatus.OK);
+//    }
 
 }
