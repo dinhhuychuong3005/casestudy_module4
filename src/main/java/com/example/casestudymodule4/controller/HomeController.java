@@ -2,13 +2,12 @@ package com.example.casestudymodule4.controller;
 
 
 import com.example.casestudymodule4.model.JwtResponse;
-import com.example.casestudymodule4.model.User;
+import com.example.casestudymodule4.model.entity.User;
 import com.example.casestudymodule4.service.jwt.JwtService;
 import com.example.casestudymodule4.service.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,8 +31,8 @@ public class HomeController {
 
     @Autowired
     private IUserService userService;
-    @Autowired
-    JavaMailSender javaMailSender;
+//    @Autowired
+//    JavaMailSender javaMailSender;
 
     @GetMapping("")
     public ResponseEntity<Iterable<User>> showListUser() {
