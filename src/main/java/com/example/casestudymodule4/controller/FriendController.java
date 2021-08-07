@@ -53,13 +53,13 @@ public class FriendController {
         List<User> userUnFriend = new ArrayList<>();
         List<User> users = (List<User>) userService.findAll();
         List<User> users1 = getListUserFriend1(idUser);
-            for (User user : users) {
-                    if (!users1.contains(user) && (user.getId() != idUser)) {
-                        userUnFriend.add(user);
-                    }
+        for (User user : users) {
+            if (!users1.contains(user) && (user.getId() != idUser)) {
+                userUnFriend.add(user);
             }
-        return new ResponseEntity<>(userUnFriend, HttpStatus.OK);
         }
+        return new ResponseEntity<>(userUnFriend, HttpStatus.OK);
+    }
 
 
     @GetMapping("/listFriend/{idUser}")
@@ -116,5 +116,9 @@ public class FriendController {
         friendService.remove(friend.getId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
+@GetMapping("/listAdd/{idFr}")
+    public ResponseEntity<List<Friend>> getListFriendAdd(@PathVariable Long idFr) {
+        List<Friend> list = friendService.findAllFriendAddById(idFr);
+        return new ResponseEntity<>(list,HttpStatus.OK);
+    }
 }

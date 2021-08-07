@@ -234,6 +234,21 @@
 		</header><!--header end-->
 
 <script>
+	function mutualFriends1(id) {
+
+		$.ajax({
+			type: "GET",
+			url: "http://localhost:8080/api/friend/allMutualFriend/" + localStorage.getItem("id") + "/" + id,
+			headers: {"Authorization": 'Bearer ' + localStorage.getItem("token")},
+			success: function (data){
+				let str = data.length;
+				if (data.length == 0){
+					document.getElementById("idAddFriend").innerHTML = "0";
+				}
+				document.getElementById("idAddFriend").innerHTML = str;
+			}
+		})
+	}
     function mutualFriends() {
         let id = document.getElementById("id").value;
         $.ajax({
@@ -273,13 +288,14 @@
 		success: function (data){
 			let str = "";
 			for (let i = 0; i < data.length; i++) {
+				console.log(data[i].id)
 				str += `<div class="col-lg-3 col-md-4 col-sm-6 col-12">
 							<div class="company_profile_info">
 								<div class="company-up-info">
 									<img src="http://via.placeholder.com/91x91" alt="">
 									<input type="hidden" id="id" value="`+ data[i].id +`">
 									<h3>` + data[i].fullName + `</h3>
-									<h4>Graphic Designer</h4>
+									<span id="idAddFriend">`+ mutualFriends1(data[i].id) + `</span><span>&nbsp bạn chung </span>
 									<ul>
 										<li><a href="#" title="" class="follow">Follow</a></li>
 										<li><a href="#" title="" class="message-us"><i class="fa fa-envelope"></i></a></li>
