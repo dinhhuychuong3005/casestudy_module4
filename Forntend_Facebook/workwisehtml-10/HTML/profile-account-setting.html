@@ -20,14 +20,16 @@
 
 <script>
     function mutualFriends(id) {
-
+console.log(id)
         $.ajax({
             type: "GET",
             url: "http://localhost:8080/api/friend/allMutualFriend/" + localStorage.getItem("id") + "/" + id,
             headers: {"Authorization": 'Bearer ' + localStorage.getItem("token")},
             success: function (data){
-                let str = data.length;
-                document.getElementById("idAddFriend").innerHTML = str;
+                console.log(data)
+               let str = data.length;
+
+                document.getElementById("show").innerHTML = str;
             }
         })
     }
@@ -44,22 +46,46 @@
                     console.log(data[0].status)
                     let str = ""
                     for (let i = 0; i < data.length; i++) {
-                        console.log(data[i].id)
-                       str  = `<div class="request-details">
-<div class="noty-user-img">
-<img src="http://via.placeholder.com/35x35" alt="">
-</div>
-<div class="request-info">
-<h3>`+ data[i].user.fullName +`</h3>
-<span id="idAddFriend">`+ mutualFriends(data[i].user.id) + `</span><span>&nbsp bạn chung </span>
-</div>
-<div class="accept-feat">
-<ul>
-<li><button type="submit" class="accept-req">Accept</button></li>
-<li><button type="submit" class="close-req"><i class="la la-close"></i></button></li>
-</ul>
-</div>`
+                        console.log(data[i])
+                             mutualFriends( data[i].user.id )
+                        str += `<div class="request-details">
+<input type="hidden" id="idAddFriend" value="">
+                                            <div class="noty-user-img">
+                                                <img src="http://via.placeholder.com/35x35" alt="">
+                                            </div>
+                                            <div class="request-info">
+                                                <h3>`+ data[i].user.fullName +`</h3>
+                                               <span id="show"></span><span>&nbsp bạn chung </span>
+                                            </div>
+                                            <div class="accept-feat">
+                                                <ul>
+                                                    <li>
+                                                        <button type="submit" class="accept-req">Accept</button>
+                                                    </li>
+                                                    <li>
+                                                        <button type="submit" class="close-req"><i
+                                                                class="la la-close"></i></button>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>`
+
+//                        str  = `<div class="request-details">
+// <div class="noty-user-img">
+// <img src="http://via.placeholder.com/35x35" alt="">
+// </div>
+// <div class="request-info">
+// <h3>`+ data[i].user.fullName +`</h3>
+// <span id="idAddFriend">`+ mutualFriends(data[i].user.id) + `</span><span>&nbsp bạn chung </span>
+// </div>
+// <div class="accept-feat">
+// <ul>
+// <li><button type="submit" class="accept-req">Accept</button></li>
+// <li><button type="submit" class="close-req"><i class="la la-close"></i></button></li>
+// </ul>
+// </div></div>`
                     }
+
                     document.getElementById("listAdd").innerHTML = str;
                 }
             }
@@ -300,7 +326,7 @@
                                    href="#nav-notification" role="tab" aria-controls="nav-notification"
                                    aria-selected="false"><i class="fa fa-flash"></i>Notifications</a>
                                 <a class="nav-item nav-link" id="nav-requests-tab" data-toggle="tab"
-                                   href="#nav-requests" role="tab" aria-controls="nav-requests" aria-selected="false"><i
+                                   href="#nav-requests"  role="tab" aria-controls="nav-requests" aria-selected="false"><i
                                         class="fa fa-group"></i>Requests</a>
                                 <a class="nav-item nav-link" id="security-login" data-toggle="tab"
                                    href="#security-login" role="tab" aria-controls="security-login"
@@ -553,10 +579,10 @@
                             </div>
                             <div class="tab-pane fade" id="nav-requests" role="tabpanel"
                                  aria-labelledby="nav-requests-tab">
-                                <div class="acc-setting">
+                                <div class="acc-setting" >
                                     <h3>Requests</h3>
-                                    <div class="requests-list" >
-                                      <div  id="listAdd"></div>
+                                    <div class="requests-list" id="listAdd" >
+
 <!--                                        <div class="request-details">-->
 <!--                                            <div class="noty-user-img">-->
 <!--                                                <img src="http://via.placeholder.com/35x35" alt="">-->

@@ -32,8 +32,8 @@ public class FriendController {
     @GetMapping("/allMutualFriend/{idUser1}/{idUser2}")
     public ResponseEntity<List<User>> getMutualFriend(@PathVariable Long idUser1, @PathVariable Long idUser2) {
         List<User> listMutualFriend = new ArrayList<>();
-        List<User> listUserFriend1 = getListUserFriend(idUser1);
-        List<User> listUserFriend2 = getListUserFriend(idUser2);
+        List<User> listUserFriend1 = showListFriend(idUser1);
+        List<User> listUserFriend2 = showListFriend(idUser2);
 
         for (User user1 : listUserFriend1) {
 
@@ -61,11 +61,31 @@ public class FriendController {
         return new ResponseEntity<>(userUnFriend, HttpStatus.OK);
     }
 
-
-    @GetMapping("/listFriend/{idUser}")
-    public ResponseEntity<List<com.example.casestudymodule4.model.entity.User>> getAllFriendById(@PathVariable Long idUser) {
+@GetMapping("/listFriendUser/{id}")
+public ResponseEntity<List<User>> listFriendUser(@PathVariable Long id){
+        List<User> users = getAllFriendById(id);
+        List<User> users1 = getAllFriendByIdFr(id);
+    for (int i = 0; i < users.size(); i++) {
+        users1.add(users.get(i));
+    }
+    return new ResponseEntity<>(users1,HttpStatus.OK);
+}
+public List<User> showListFriend(Long id){
+    List<User> users = getAllFriendById(id);
+    List<User> users1 = getAllFriendByIdFr(id);
+    for (int i = 0; i < users.size(); i++) {
+        users1.add(users.get(i));
+    }
+    return users1;
+}
+    public List<User> getAllFriendById( Long idUser) {
         List<User> listUserFriend = getListUserFriend(idUser);
-        return new ResponseEntity<>(listUserFriend, HttpStatus.OK);
+        return  listUserFriend;
+    }
+
+    public List<User> getAllFriendByIdFr( Long idFr) {
+        List<User> listUserFriend1 = getListUserFriendByFr(idFr);
+        return listUserFriend1;
     }
 
     public List<User> getListUserFriend1(Long idUser) {
@@ -90,6 +110,18 @@ public class FriendController {
         }
         return listUser;
     }
+    public List<User> getListUserFriendByFr(Long idFr) {
+        List<Friend> listFriend = friendService.findAllFriendByIdFr(idFr);
+        List<com.example.casestudymodule4.model.entity.User> listUser = new ArrayList<>();
+        for (Friend friendEntity : listFriend) {
+
+            if (friendEntity.getStatus() == 1) {
+                com.example.casestudymodule4.model.entity.User user = userService.findById(friendEntity.getUser().getId()).get();
+                listUser.add(user);
+            }
+        }
+        return listUser;
+    }
 
     @GetMapping("/addFriend/{idUs}/{idFr}")
     public ResponseEntity<Friend> addFriend(@PathVariable Long idUs, @PathVariable Long idFr) {
@@ -101,14 +133,20 @@ public class FriendController {
         return new ResponseEntity<>(friend, HttpStatus.OK);
     }
 
-    @PostMapping("/accept/{id}")
-    public ResponseEntity<Friend> acceptFriend(@PathVariable Long id) {
-        Friend friend = friendService.findById(id).get();
+//    @PostMapping("/accept/{idUs}/{idFr}")
+//    public ResponseEntity<Friend> acceptFriend(@PathVariable Long idUs,@PathVariable Long idFr) {
+//        Friend friend = friendService.findById(id).get();
+//        friend.setStatus(1);
+//        friendService.save(friend);
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
+@GetMapping("/add/{idFr}/{idU}")
+public ResponseEntity<Friend> add(@PathVariable Long idFr,@PathVariable Long idU){
+        Friend friend = friendService.findFriendByUserIdAndIdFriendOfUser(idFr,idU);
         friend.setStatus(1);
         friendService.save(friend);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
+        return new ResponseEntity<>(friend,HttpStatus.OK);
+}
     @DeleteMapping("/deleteFriend/{idU1}/{idU2}")
     public ResponseEntity<Friend> deleteFriend(@PathVariable Long idU1, @PathVariable Long idU2) {
         Friend friend = friendService.findFriendByIdUser(idU1, idU2);

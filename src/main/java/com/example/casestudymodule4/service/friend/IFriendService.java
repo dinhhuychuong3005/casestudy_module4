@@ -13,8 +13,9 @@ public interface IFriendService extends IGeneralService<Friend> {
     public List<Friend> findAllFriendById(@Param("id") Long id);
     @Query("SELECT f FROM Friend f where f.status = 2 and f.idFriendOfUser=:idF")
     public List<Friend> findAllFriendAddById(@Param("idF") Long idF);
-    @Query("SELECT f FROM Friend f where f.id=:idF and f.idFriendOfUser=:idU")
+    @Query("SELECT f FROM Friend f where f.user.id=:idF and f.idFriendOfUser=:idU")
     public Friend findFriendByIdUser(@Param("idF") Long idF,@Param("idU") Long idU);
-
-    public Friend findByUserIdAndIdFriendOfUser(Long userId,Long idUserFriend);
+    @Query("SELECT f FROM Friend f where f.status = 1 and f.idFriendOfUser=:id")
+    public List<Friend> findAllFriendByIdFr(@Param("id") Long id);
+    public Friend findFriendByUserIdAndIdFriendOfUser(Long userId,Long idUserFriend);
 }
