@@ -53,6 +53,10 @@ public class FriendController {
         List<User> userUnFriend = new ArrayList<>();
         List<User> users = (List<User>) userService.findAll();
         List<User> users1 = getListUserFriend1(idUser);
+        List<User> users2 = getListUserFriendByFr(idUser);
+        for (int i = 0; i < users2.size(); i++) {
+            users1.add(users2.get(i));
+        }
         for (User user : users) {
             if (!users1.contains(user) && (user.getId() != idUser)) {
                 userUnFriend.add(user);
@@ -149,9 +153,17 @@ public ResponseEntity<Friend> add(@PathVariable Long idFr,@PathVariable Long idU
 }
     @DeleteMapping("/deleteFriend/{idU1}/{idU2}")
     public ResponseEntity<Friend> deleteFriend(@PathVariable Long idU1, @PathVariable Long idU2) {
-        Friend friend = friendService.findFriendByIdUser(idU1, idU2);
-        System.out.println(friend.getId());
-        friendService.remove(friend.getId());
+        Friend friend = friendService.findFriendByIdUserAndIdFriendOfUser1(idU1, idU2);
+        Friend friend1 = friendService.findFriendByIdUserAndIdFriendOfUser1(idU2, idU1);
+
+        if (friend == null){
+            friendService.remove(friend1.getId());
+        }else if (friend1 == null){
+            friendService.remove(friend.getId());
+        }else {
+            friendService.remove(friend.getId());
+            friendService.remove(friend1.getId());
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 @GetMapping("/listAdd/{idFr}")

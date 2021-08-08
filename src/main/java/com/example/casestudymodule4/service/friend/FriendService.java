@@ -34,6 +34,11 @@ public class FriendService implements IFriendService {
     }
 
     @Override
+    public List<Friend> findAllFriendByIdUs(Long id) {
+        return friendRepository.findAllFriendByIdUs(id);
+    }
+
+    @Override
     public List<Friend> findAllFriendById(Long id) {
         return friendRepository.findAllFriendById(id);
     }
@@ -43,11 +48,11 @@ public class FriendService implements IFriendService {
         return friendRepository.findAllFriendAddById(idF);
     }
 
-
     @Override
-    public Friend findFriendByIdUser(Long idF, Long idU) {
-        return friendRepository.findFriendByIdUser(idF, idU);
+    public Friend findFriendByIdUserAndIdFriendOfUser1(Long idUs, Long idF) {
+        return friendRepository.findFriendByIdUserAndIdFriendOfUser1(idUs,idF);
     }
+
 
     @Override
     public List<Friend> findAllFriendByIdFr(Long id) {

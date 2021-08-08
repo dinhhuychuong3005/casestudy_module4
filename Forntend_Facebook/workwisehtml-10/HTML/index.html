@@ -31,6 +31,7 @@
         })
     }
     function showUser() {
+
         $.ajax({
             type: "GET",
             url: "http://localhost:8080/api/friend/listUser/" + localStorage.getItem("id"),
@@ -39,10 +40,11 @@
                 console.log(data)
                 let str = "";
                 for (let i = 0; i < data.length; i++) {
-console.log(data)
+console.log(data[i].id)
                     str += `
-<input type="hidden" id="idFriendAdd" value="`+ data[i].id +`">
+
                                 <div class="user-profy">
+                                <input type="hidden" id="idFriendAdd" value="\`+ data[i].id +\`">
                             <img src="http://via.placeholder.com/57x57" alt="">
                          <h3>` + data[i].fullName + `</h3>
                           <span>Graphic Designer</span>
