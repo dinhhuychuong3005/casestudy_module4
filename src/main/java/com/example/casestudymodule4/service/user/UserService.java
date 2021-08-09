@@ -1,7 +1,7 @@
 package com.example.casestudymodule4.service.user;
 
 
-import com.example.casestudymodule4.model.User;
+import com.example.casestudymodule4.model.entity.User;
 import com.example.casestudymodule4.model.UserPrinciple;
 import com.example.casestudymodule4.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,7 @@
 package com.example.casestudymodule4.service.Comment;
 
-import com.example.casestudymodule4.model.Comment;
+
+import com.example.casestudymodule4.model.entity.Comment;
 import com.example.casestudymodule4.repository.ICommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
