@@ -46,6 +46,7 @@
         //         }
         //     })
         // }
+
         $(document).ready(function()
         {
             let submit = $("button[type='submit']");
@@ -73,7 +74,7 @@
                 }
 
                 // Lấy tất cả dữ liệu trong form login
-                var data = $('form#form-login').serialize();
+                let data1 = $('form#form-login').serialize();
                 // Sử dụng $.ajax()
                 $.ajax({
                     headers: {
@@ -92,10 +93,11 @@
                             window.location.href = 'index.html';
                                         localStorage.setItem('token', data.accessToken)
                                         localStorage.setItem("id", data.id)
-                                        localStorage.setItem("fullName", data.fullName)
+                            localStorage.setItem("password",password);
+
                                         console.log(data.id)
                                         console.log(data.roles[0].authority)
-                            console.log(data.fullName)
+
                                         // console.log(data);
                                         // console.log(data.accessToken)
                                         // localStorage.setItem('token', data.accessToken)

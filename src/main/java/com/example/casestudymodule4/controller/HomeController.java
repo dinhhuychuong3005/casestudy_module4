@@ -83,5 +83,20 @@ public class HomeController {
 //
 //        return new ResponseEntity<>(message,HttpStatus.OK);
 //    }
+    //    @PostMapping("/sendEmailUpdate/{email}") //gửi email
+//    public ResponseEntity<SimpleMailMessage> sendSimpleEmail(@PathVariable String email) {
+//
+//        // Create a Simple MailMessage.
+//        SimpleMailMessage message = new SimpleMailMessage();
+//
+//        message.setTo(email);
+//        message.setSubject("Mã xác thực");
+//        message.setText("Hello, Mã xác thực của bạn là 1208");
+//
+//        // Send Message!
+//        this.javaMailSender.send(message);
+//
+//        return new ResponseEntity<>(message,HttpStatus.OK);
+//    }
 
 }

@@ -16,9 +16,12 @@
     <link rel="stylesheet" type="text/css" href="lib/slick/slick-theme.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="stylesheet" type="text/css" href="css/responsive.css">
+    <script src="checkToken.js"></script>
 </head>
 
 <script>
+
+
 
     function showFriendAdd() {
         $.ajax({
@@ -36,11 +39,11 @@
                         console.log(data[i].user.id)
                         $.ajax({
                             type: "GET",
-                            url: "http://localhost:8080/api/friend/allMutualFriend/" + localStorage.getItem("id")  + "/"  + data[i].user.id  ,
+                            url: "http://localhost:8080/api/friend/allMutualFriend/" + localStorage.getItem("id") + "/" + data[i].user.id,
                             headers: {"Authorization": 'Bearer ' + localStorage.getItem("token")},
                             success: function (data1) {
                                 console.log(data1[i])
-                                str +=     `<div class="request-details">
+                                str += `<div class="request-details">
                                                <input type="hidden" id="idAddFriend" value="">
                                                <div class="noty-user-img">
                                                 <img src="http://via.placeholder.com/35x35" alt="">
@@ -52,7 +55,7 @@
                                                   <div class="accept-feat">
                                                 <ul>
                                                     <li>
-                                                        <button type="submit" onclick="addFriendUs(`+ data[i].user.id +`)" class="accept-req">Accept</button>
+                                                        <button type="submit" onclick="addFriendUs(` + data[i].user.id + `)" class="accept-req">Accept</button>
                                                     </li>
                                                     <li>
                                                         <button type="submit" class="close-req"><i
@@ -70,19 +73,20 @@
             }
         })
     }
-    function addFriendUs(id){
+
+    function addFriendUs(id) {
         $.ajax({
             type: "GET",
-            url: "http://localhost:8080/api/friend/add/" + id + "/"  + localStorage.getItem("id") ,
+            url: "http://localhost:8080/api/friend/add/" + id + "/" + localStorage.getItem("id"),
             headers: {"Authorization": 'Bearer ' + localStorage.getItem("token")},
-            success: function (){
+            success: function () {
                 alert("ok rồi nhé")
                 showFriendAdd()
             }
         })
     }
 </script>
-<body onload="showFriendAdd()">
+<body onload="showFriendAdd(),checkTonke(),getUserById1()">
 
 
 <div class="wrapper">
@@ -288,7 +292,7 @@
                             <li><a href="#" title="">Faqs</a></li>
                             <li><a href="#" title="">Terms & Conditions</a></li>
                         </ul>
-                        <h3 class="tc"><a href="sign-in.html" title="">Logout</a></h3>
+                        <h3 class="tc"><a href="sign-in.html" onclick="setItem()" title="">Logout</a></h3>
                     </div><!--user-account-settingss end-->
                 </div>
             </div><!--header-data end-->
@@ -439,6 +443,48 @@
                                     </div><!--pro-work-status end-->
                                 </div><!--acc-setting end-->
                             </div>
+                            <script>
+                                function updatePassword() {
+                                    console.log(localStorage.getItem("password"))
+                                    let oldPassword = document.getElementById("oldPassword").value;
+                                    console.log(oldPassword)
+                                    let newPassword = document.getElementById("newPassword").value;
+                                    console.log(newPassword)
+                                    let confirmPassword = document.getElementById("confirmPassword").value;
+                                    let ma = document.getElementById("maXT").value;
+                                    if ((oldPassword == "") || (oldPassword != localStorage.getItem("password"))) {
+                                        document.getElementById("checkPassOld").innerHTML = "<p>Mật khẩu cũ không đúng!</p>"
+                                    }
+                                    if (newPassword == "") {
+                                        document.getElementById("checkNew").innerHTML = "<p>Không được để trống!</p>"
+                                    }
+                                    if (confirmPassword == "" || confirmPassword != newPassword) {
+                                        document.getElementById("confirm").innerHTML = "<p>Không trùng với mất khẩu mới, mời nhập lại!</p>"
+                                    }
+                                    if (ma != "1208"){
+                                        document.getElementById("ma").innerHTML = "<p>mã xác thực không đúng mời nhập lại</p>"
+                                    }
+                                    else {
+                                        let user = {
+                                            password: newPassword
+                                        }
+                                        $.ajax({
+                                            headers: {
+                                                'Accept': 'application/json',
+                                                'Content-type': 'application/json'
+                                            },
+                                            type: "PUT",
+                                            url: "http://localhost:8080/api/users/editPassword/" + localStorage.getItem("id"),
+                                            data: JSON.stringify(user),
+                                            success: function () {
+                                                alert("mời bạn đăng nhập lại");
+                                                setItem();
+                                                window.location.href = "sign-in.html";
+                                            }
+                                        })
+                                    }
+                                }
+                            </script>
                             <div class="tab-pane fade" id="nav-password" role="tabpanel"
                                  aria-labelledby="nav-password-tab">
                                 <div class="acc-setting">
@@ -447,31 +493,56 @@
                                         <div class="cp-field">
                                             <h5>Old Password</h5>
                                             <div class="cpp-fiel">
-                                                <input type="text" name="old-password" placeholder="Old Password">
+                                                <input type="password" id="oldPassword" name="old-password"
+                                                       placeholder="Old Password">
                                                 <i class="fa fa-lock"></i>
+                                            </div>
+                                            <div id="checkPassOld">
+
                                             </div>
                                         </div>
                                         <div class="cp-field">
                                             <h5>New Password</h5>
                                             <div class="cpp-fiel">
-                                                <input type="text" name="new-password" placeholder="New Password">
+                                                <input type="password" id="newPassword" name="new-password"
+                                                       placeholder="New Password">
                                                 <i class="fa fa-lock"></i>
                                             </div>
+                                            <div id="checkNew">
+
+                                            </div>
                                         </div>
+
                                         <div class="cp-field">
                                             <h5>Repeat Password</h5>
                                             <div class="cpp-fiel">
-                                                <input type="text" name="repeat-password" placeholder="Repeat Password">
+                                                <input type="text" id="confirmPassword" name="repeat-password"
+                                                       placeholder="Repeat Password">
+                                                <i class="fa fa-lock"></i>
+                                            </div>
+                                            <div id="confirm">
+
+                                            </div>
+                                        </div>
+                                        <div class="cp-field">
+                                            <h5>Mã xác thực</h5>
+                                            <div class="cpp-fiel">
+                                                <input type="text" id="maXT" name="repeat-password"
+                                                       placeholder="Mã xác thực">
                                                 <i class="fa fa-lock"></i>
                                             </div>
                                         </div>
+                                        <div id="ma">
+
+                                        </div>
+
                                         <div class="cp-field">
                                             <h5><a href="#" title="">Forgot Password?</a></h5>
                                         </div>
                                         <div class="save-stngs pd2">
                                             <ul>
                                                 <li>
-                                                    <button type="submit">Save Setting</button>
+                                                    <button onclick="updatePassword()" type="button">Save Setting</button>
                                                 </li>
                                                 <li>
                                                     <button type="submit">Restore Setting</button>
