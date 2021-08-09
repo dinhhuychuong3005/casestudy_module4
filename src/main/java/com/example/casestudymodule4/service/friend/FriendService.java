@@ -40,18 +40,34 @@ public class FriendService implements IFriendService {
 
 
     @Override
+    public List<Friend> findAllFriendByIdUs(Long id) {
+        return friendRepository.findAllFriendByIdUs(id);
+    }
+
+    @Override
     public List<Friend> findAllFriendById(Long id) {
         return friendRepository.findAllFriendById(id);
     }
 
     @Override
-    public Friend findFriendByIdUser(Long idF, Long idU) {
-        return friendRepository.findFriendByIdUser(idF, idU);
+    public List<Friend> findAllFriendAddById(Long idF) {
+        return friendRepository.findAllFriendAddById(idF);
     }
 
     @Override
-    public Friend findByUserIdAndIdFriendOfUser(Long userId, Long idUserFriend) {
-        return friendRepository.findByUserIdAndIdFriendOfUser(userId, idUserFriend);
+    public Friend findFriendByIdUserAndIdFriendOfUser1(Long idUs, Long idF) {
+        return friendRepository.findFriendByIdUserAndIdFriendOfUser1(idUs,idF);
+    }
+
+
+    @Override
+    public List<Friend> findAllFriendByIdFr(Long id) {
+        return friendRepository.findAllFriendByIdFr(id);
+    }
+
+    @Override
+    public Friend findFriendByUserIdAndIdFriendOfUser(Long userId, Long idUserFriend) {
+        return friendRepository.findFriendByUserIdAndIdFriendOfUser(userId, idUserFriend);
     }
 
 }

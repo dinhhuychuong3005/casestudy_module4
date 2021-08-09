@@ -21,35 +21,7 @@
 </head>
 
 <script>
-	function showList() {
-		$.ajax({
-			type: "GET",
-			url: "http://localhost:8080/api/",
-			headers: {"Authorization": 'Bearer ' + localStorage.getItem("token")},
-			success: function (data) {
-				let str = "<button type='button' onclick='showCreateForm()'>Create</button>\n" +
-						"<h1 style='margin-left: 30%'>List Product</h1>" +
-						"<table class='table table-dark table-striped'>\n" + "<tr>\n" +
-						"<th>username</th>\n" +
-						"<th>password</th>\n" +
-						"<th>fullname</th>\n" +
-						"<th>address</th>\n" +
-						"<th>Avatar</th>\n" +
-						"</tr>\n";
-				for (let i = 0; i < data.length; i++) {
-					str += "<tr><td>" + data[i].username;
-					str += "</td><td>" + data[i].password;
-					str += "</td><td>" + data[i].fullName;
-					str += "</td><td>" + data[i].address;
-					str += "</td><td>" + "<img width='80px' height='40px' src='" + data[i].avatar + "'/>"
-					console.log(data[i].avatar)
-					str += "</td>"
-				}
-				str += "</table>\n";
-				document.getElementById("showList").innerHTML = str;
-			},
-		});
-	}
+
 	function setItem(){
 		window.localStorage.removeItem("token")
 	}

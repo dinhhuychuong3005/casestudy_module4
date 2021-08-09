@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -52,6 +53,15 @@ public class HomeController {
         User currentUser = userService.findByUserName(user.getUsername()).get();
         return ResponseEntity.ok(new JwtResponse(jwt, currentUser.getId(), userDetails.getUsername(), currentUser.getFullName(), userDetails.getAuthorities()));
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<User> findById(@PathVariable Long id) {
+        Optional<User> userOptional = userService.findById(id);
+        if (!userOptional.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(userOptional.get(), HttpStatus.OK);
+        }
+    }
 
     @PostMapping("/register")
     public ResponseEntity<User> registerAccount(@RequestBody @Valid User user) {
@@ -67,6 +77,21 @@ public class HomeController {
 //        message.setTo(email);
 //        message.setSubject("Test Simple Email");
 //        message.setText("Hello, Im testing Simple Email");
+//
+//        // Send Message!
+//        this.javaMailSender.send(message);
+//
+//        return new ResponseEntity<>(message,HttpStatus.OK);
+//    }
+    //    @PostMapping("/sendEmailUpdate/{email}") //gửi email
+//    public ResponseEntity<SimpleMailMessage> sendSimpleEmail(@PathVariable String email) {
+//
+//        // Create a Simple MailMessage.
+//        SimpleMailMessage message = new SimpleMailMessage();
+//
+//        message.setTo(email);
+//        message.setSubject("Mã xác thực");
+//        message.setText("Hello, Mã xác thực của bạn là 1208");
 //
 //        // Send Message!
 //        this.javaMailSender.send(message);
