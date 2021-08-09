@@ -49,11 +49,21 @@ public class User {
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id")})
     private Set<Role> roles;
+    private boolean enabled=true;
 
     public User() {
     }
 
-    public User(String username, String password, String fullName, String address, String email, String numberPhone, String gender, String avatar, Date dateOfBirth, Set<Role> roles) {
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public User(Long id, String username, String password, String fullName, String address, String email, String numberPhone, String gender, String avatar, Date dateOfBirth, Set<Role> roles, boolean enabled) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.fullName = fullName;
@@ -64,6 +74,7 @@ public class User {
         this.avatar = avatar;
         this.dateOfBirth = dateOfBirth;
         this.roles = roles;
+        this.enabled = enabled;
     }
 
     public User(String username, String password, String fullName) {
