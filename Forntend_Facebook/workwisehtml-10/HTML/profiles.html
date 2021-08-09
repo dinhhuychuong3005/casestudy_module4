@@ -235,23 +235,8 @@
     </header><!--header end-->
 
     <script>
-        function mutualFriends1(id) {
-            console.log(id)
-            $.ajax({
-                type: "GET",
-                url: "http://localhost:8080/api/friend/allMutualFriend/" + localStorage.getItem("id") + "/" + id,
-
-                headers: {"Authorization": 'Bearer ' + localStorage.getItem("token")},
-
-                success: function (data) {
 
 
-                    return data.length;
-
-
-                }
-            })
-        }
 
         function mutualFriends(id) {
             // let id = document.getElementById("id").value;
@@ -329,14 +314,14 @@
                                 			<img src="http://via.placeholder.com/91x91" alt="" >
                                 			<input type="hidden" id="id" value="` + data[i].id + `">
                                 			<h3>` + data[i].fullName + `</h3>
-                                			<span  id="idAddFriend">` + data1.length + `</span><span>&nbsp bạn chung </span>
+                                			<a onclick="mutualFriends(` + data[i].id + `)" <span  id="idAddFriend">` + data1.length + `</span><span>&nbsp bạn chung </span></a>
                                 			<ul>
                                 				<li><a href="#" onclick="deleteFriend(` + data[i].id + `)" title="" class="follow">Hủy Kết Bạn</a></li>
                                 				<li><a href="#" title="" class="message-us"><i class="fa fa-envelope"></i></a></li>
                                 				<li><a href="#" title="" class="hire-us">Hire</a></li>
                                 			</ul>
                                 		</div>
-                                		<input type="submit" onclick="mutualFriends(` + data[i].id + `)" value="View Profile" ></a>
+                                		<a href="user-profile.html" onclick="getUserById1(` + data[i].id + `)" >View Profile </a>
                                 	</div>
                                 </div>`
                                 document.getElementById("friend").innerHTML = str;

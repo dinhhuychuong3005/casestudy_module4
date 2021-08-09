@@ -16,10 +16,24 @@
 <link rel="stylesheet" type="text/css" href="lib/slick/slick-theme.css">
 <link rel="stylesheet" type="text/css" href="css/style.css">
 <link rel="stylesheet" type="text/css" href="css/responsive.css">
+	<script src="checkToken.js"></script>
 </head>
 
-
-<body>
+<script>
+	function getUserById1(id) {
+		$.ajax({
+			type: "GET",
+			url: "http://localhost:8080/api/" + id,
+			headers: {"Authorization": 'Bearer ' + localStorage.getItem("token")},
+			success: function (data) {
+				console.log(data.fullName)
+				localStorage.setItem("fullNameUs", data.fullName)
+				document.getElementById("name").innerHTML = data.fullName;
+			}
+		})
+	}
+</script>
+<body onload="checkTonke(),getUserById1()">
 	
 
 	<div class="wrapper">
@@ -293,7 +307,7 @@
 											<div class="suggestion-usd">
 												<img src="http://via.placeholder.com/35x35" alt="">
 												<div class="sgt-text">
-													<h4>John Doe</h4>
+													<h4 >ABC</h4>
 													<span>PHP Developer</span>
 												</div>
 												<span><i class="la la-plus"></i></span>
@@ -340,7 +354,7 @@
 							<div class="col-lg-6">
 								<div class="main-ws-sec">
 									<div class="user-tab-sec">
-										<h3>John Doe</h3>
+										<h3 id="name"></h3>
 										<div class="star-descp">
 											<span>Graphic Designer at Self Employed</span>
 											<ul>
