@@ -2,13 +2,12 @@ package com.example.casestudymodule4.controller;
 
 
 import com.example.casestudymodule4.model.JwtResponse;
-import com.example.casestudymodule4.model.User;
+import com.example.casestudymodule4.model.entity.User;
 import com.example.casestudymodule4.service.jwt.JwtService;
 import com.example.casestudymodule4.service.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,8 +32,8 @@ public class HomeController {
 
     @Autowired
     private IUserService userService;
-    @Autowired
-    JavaMailSender javaMailSender;
+//    @Autowired
+//    JavaMailSender javaMailSender;
 
     @GetMapping("")
     public ResponseEntity<Iterable<User>> showListUser() {
@@ -54,62 +53,50 @@ public class HomeController {
         User currentUser = userService.findByUserName(user.getUsername()).get();
         return ResponseEntity.ok(new JwtResponse(jwt, currentUser.getId(), userDetails.getUsername(), currentUser.getFullName(), userDetails.getAuthorities()));
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<User> findById(@PathVariable Long id) {
+        Optional<User> userOptional = userService.findById(id);
+        if (!userOptional.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(userOptional.get(), HttpStatus.OK);
+        }
+    }
 
     @PostMapping("/register")
     public ResponseEntity<User> registerAccount(@RequestBody @Valid User user) {
         userService.save(user);
         return new ResponseEntity<>(userService.findById(user.getId()).get(),HttpStatus.OK);
     }
-    @PostMapping("/sendEmail/{email}") //gửi email
-    public ResponseEntity<SimpleMailMessage> sendSimpleEmail(@PathVariable String email) {
-
-        // Create a Simple MailMessage.
-        SimpleMailMessage message = new SimpleMailMessage();
-
-        message.setTo(email);
-        message.setSubject("Test Simple Email");
-        message.setText("Hello, Im testing Simple Email");
-
-        // Send Message!
-        this.javaMailSender.send(message);
-
-        return new ResponseEntity<>(message,HttpStatus.OK);
-    }
-
-
-
-    @PutMapping("/editUser/{id}")
-    public ResponseEntity<User> updatePassword(@PathVariable Long id, @RequestBody User user) {
-        Optional<User> userOptional = userService.findById(id);
-        if (!userOptional.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        user.setId(userOptional.get().getId());
-        user.setUsername(userOptional.get().getUsername());
-        user.setPassword(userOptional.get().getPassword());
-        user.setFullName(userOptional.get().getFullName());
-        user.setEmail(userOptional.get().getEmail());
-        user.setGender(userOptional.get().getGender());
-
-        userService.save(user);
-        return new ResponseEntity<>(user, HttpStatus.OK);
-    }
-
-    @PutMapping("/editPassword/{id}")
-    public ResponseEntity<User> editPassword(@PathVariable Long id, @RequestBody User user) {
-        Optional<User> userOptional = userService.findById(id);
-        if (!userOptional.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-
-        user.setPassword(userOptional.get().getPassword());
-        user.setFullName(userOptional.get().getFullName());
-        user.setEmail(userOptional.get().getEmail());
-        user.setGender(userOptional.get().getGender());
-
-        userService.save(user);
-        return new ResponseEntity<>(user, HttpStatus.OK);
-    }
+//    @PostMapping("/sendEmail/{email}") //gửi email
+//    public ResponseEntity<SimpleMailMessage> sendSimpleEmail(@PathVariable String email) {
+//
+//        // Create a Simple MailMessage.
+//        SimpleMailMessage message = new SimpleMailMessage();
+//
+//        message.setTo(email);
+//        message.setSubject("Test Simple Email");
+//        message.setText("Hello, Im testing Simple Email");
+//
+//        // Send Message!
+//        this.javaMailSender.send(message);
+//
+//        return new ResponseEntity<>(message,HttpStatus.OK);
+//    }
+    //    @PostMapping("/sendEmailUpdate/{email}") //gửi email
+//    public ResponseEntity<SimpleMailMessage> sendSimpleEmail(@PathVariable String email) {
+//
+//        // Create a Simple MailMessage.
+//        SimpleMailMessage message = new SimpleMailMessage();
+//
+//        message.setTo(email);
+//        message.setSubject("Mã xác thực");
+//        message.setText("Hello, Mã xác thực của bạn là 1208");
+//
+//        // Send Message!
+//        this.javaMailSender.send(message);
+//
+//        return new ResponseEntity<>(message,HttpStatus.OK);
+//    }
 
 }
