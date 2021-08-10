@@ -16,7 +16,11 @@ public class Comment {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Comment() {
+    public Comment(Long id, String comment, Date dateComment, User user) {
+        this.id = id;
+        this.comment = comment;
+        this.dateComment = dateComment;
+        this.user = user;
     }
 
     public Comment(String comment, Date dateComment, User user) {
@@ -25,11 +29,8 @@ public class Comment {
         this.user = user;
     }
 
-    public Comment(Long id, String comment, Date dateComment, User user) {
-        this.id = id;
-        this.comment = comment;
-        this.dateComment = dateComment;
-        this.user = user;
+    public Comment(){
+
     }
 
     public Long getId() {
