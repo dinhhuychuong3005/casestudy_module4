@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -31,11 +32,6 @@ public class PostController {
     @GetMapping("")
     public ResponseEntity<Iterable<Post>> findAll() {
         return new ResponseEntity<>(postService.findAll(), HttpStatus.OK);
-    }
-    @GetMapping("/search")
-    public ResponseEntity<Iterable<Post>> SearchByContent(@RequestParam String q) {
-
-        return new ResponseEntity<>(postService.findAllByContentContaining(q), HttpStatus.OK);
     }
 
     public List<User> getListUserFriend(Long idUser) {
@@ -80,18 +76,18 @@ public class PostController {
 
     @GetMapping("/public/{id}")
     public ResponseEntity<Iterable<Post>> findAllByIdUsAndByView(@PathVariable Long id) {
-        return new ResponseEntity<>(postService.findAllByUserIdAndByView(id), HttpStatus.OK);
+        return new ResponseEntity<>(postService.findAllByUserIdAndByStatus(id), HttpStatus.OK);
     }
 
     @GetMapping("/listPostFriend/{id}")
     public ResponseEntity<Iterable<Post>> getAllPostFriend(@PathVariable Long id) {
         List<User> users = showListFriend(id);
-        List<Post> posts;
+        List<Post> posts ;
         List<Post> posts1 = new ArrayList<>();
         for (int i = 0; i < users.size(); i++) {
             System.out.println(users.get(i).getId());
-            posts = (List<Post>) postService.findAllByUserIdAndByView(users.get(i).getId());
-            if (postService.findAllByUserIdAndByView(users.get(i).getId()) != null) {
+                posts = (List<Post>) postService.findAllByUserIdAndByStatus(users.get(i).getId());
+            if (postService.findAllByUserIdAndByStatus(users.get(i).getId()) != null) {
                 for (int j = 0; j < posts.size(); j++) {
                     posts1.add(posts.get(j));
                 }
@@ -99,8 +95,13 @@ public class PostController {
 
         }
         return new ResponseEntity<>(posts1, HttpStatus.OK);
-
-
+    }
+    @GetMapping("/views/{id}")
+    public ResponseEntity<Post> checkView(@PathVariable Long id){
+        Optional<Post> post = postService.findById(id);
+        post.get().setView(post.get().getView()+1);
+        postService.save(post.get());
+        return new ResponseEntity<>(post.get(),HttpStatus.OK);
     }
 }
 
