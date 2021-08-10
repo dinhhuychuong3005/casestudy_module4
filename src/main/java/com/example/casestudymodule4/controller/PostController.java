@@ -32,6 +32,11 @@ public class PostController {
     public ResponseEntity<Iterable<Post>> findAll() {
         return new ResponseEntity<>(postService.findAll(), HttpStatus.OK);
     }
+    @GetMapping("/search")
+    public ResponseEntity<Iterable<Post>> SearchByContent(@RequestParam String q) {
+
+        return new ResponseEntity<>(postService.findAllByContentContaining(q), HttpStatus.OK);
+    }
 
     public List<User> getListUserFriend(Long idUser) {
         List<Friend> listFriend = friendService.findAllFriendById(idUser);
@@ -81,11 +86,11 @@ public class PostController {
     @GetMapping("/listPostFriend/{id}")
     public ResponseEntity<Iterable<Post>> getAllPostFriend(@PathVariable Long id) {
         List<User> users = showListFriend(id);
-        List<Post> posts ;
+        List<Post> posts;
         List<Post> posts1 = new ArrayList<>();
         for (int i = 0; i < users.size(); i++) {
             System.out.println(users.get(i).getId());
-                posts = (List<Post>) postService.findAllByUserIdAndByView(users.get(i).getId());
+            posts = (List<Post>) postService.findAllByUserIdAndByView(users.get(i).getId());
             if (postService.findAllByUserIdAndByView(users.get(i).getId()) != null) {
                 for (int j = 0; j < posts.size(); j++) {
                     posts1.add(posts.get(j));
@@ -94,6 +99,8 @@ public class PostController {
 
         }
         return new ResponseEntity<>(posts1, HttpStatus.OK);
+
+
     }
 }
 

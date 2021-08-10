@@ -619,10 +619,13 @@ document.getElementById("post").innerHTML = str;
                                                     <img src="images/liked-img.png" alt="">
                                                     <span>25</span>
                                                 </li>
-                                                <li><a href="#" title="" class="com"><img src="images/com.png" alt="">
+                                                <li><a href="#" title="" class="com" onclick="openComment()"><img src="images/com.png" alt="">
                                                     Comment 15</a></li>
                                             </ul>
                                             <a><i class="la la-eye"></i>Views 50</a>
+                                        </div>
+                                        <div id ="open-comment">
+                                   <!--  o div Ajax Quocanh      -->
                                         </div>
                                     </div><!--post-bar end-->
                                     <div class="posty">
@@ -1194,7 +1197,98 @@ document.getElementById("post").innerHTML = str;
 
 </div><!--theme-layout end-->
 
+<!--Ajax Qanh-->
+<script>
+    function openComment() {
+        let comment=`<div class="comment-section">
+<div class="plus-ic">
+<i class="la la-plus"></i>
+</div>
+<div class="comment-sec">
+<ul>
+<li>
+<div class="comment-list">
+<div class="bg-img">
+<img src="http://via.placeholder.com/40x40" alt="">
+</div>
+<div class="comment">
+<h3>John Doe</h3>
+<span><img src="images/clock.png" alt=""> 3 min ago</span>
+<p>Lorem ipsum dolor sit amet, </p>
+<a href="#" title="" class="active"><i class="fa fa-reply-all"></i>Reply</a>
+</div>
+</div>
+<ul>
+<li>
+<div class="comment-list">
+<div class="bg-img">
+<img src="http://via.placeholder.com/40x40" alt="">
+</div>
+<div class="comment">
+<h3>John Doe</h3>
+<span><img src="images/clock.png" alt=""> 3 min ago</span>
+<p>Hi John </p>
+<a href="#" title=""><i class="fa fa-reply-all"></i>Reply</a>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<div class="comment-list">
+<div class="bg-img">
+<img src="http://via.placeholder.com/40x40" alt="">
+</div>
+<div class="comment">
+<h3>John Doe</h3>
+<span><img src="images/clock.png" alt=""> 3 min ago</span>
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam luctus hendrerit metus, ut ullamcorper quam finibus at.</p>
+<a href="#" title=""><i class="fa fa-reply-all"></i>Reply</a>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="post-comment">
+<div class="cm_img">
+<img src="http://via.placeholder.com/40x40" alt="">
+</div>
+<div class="comment_box">
+<form>
+<input type="text" placeholder="Post a comment" id="comment">
+<button type="submit" onclick=`+addNewComment()+` >Send</button>
+</form>
+</div>
+</div>
+</div>`
+        document.getElementById('open-comment').innerHTML= comment
+    }
 
+    function addNewComment(){
+        let Comment =$('#comment').val();
+        let newComment={
+            comment:Comment
+        }
+
+        $.ajax({
+            header:{
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            type:"POST",
+            data:JSON.stringify(newComment),
+            url:"localhost:8080/api/Comment"+localStorage.getItem("id"),
+            success:function (data){
+                console.log(data)
+            }
+        })
+    }
+    <!--Qanh-->
+
+
+
+
+</script>
 <script type="text/javascript" src="js/jquery.min.js"></script>
 <script type="text/javascript" src="js/popper.js"></script>
 <script type="text/javascript" src="js/bootstrap.min.js"></script>

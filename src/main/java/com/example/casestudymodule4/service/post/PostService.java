@@ -39,5 +39,11 @@ postRepository.deleteById(id);
     @Override
     public Iterable<Post> findAllByUserIdAndByView(Long id) {
         return postRepository.findAllByUserIdAndByView(id);
+
+    }
+
+    @Override
+    public Iterable<Post> findAllByContentContaining(String Content) {
+        return postRepository.findAllByContentContaining(Content);
     }
 }
