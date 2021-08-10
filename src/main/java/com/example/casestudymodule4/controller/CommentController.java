@@ -1,6 +1,6 @@
 package com.example.casestudymodule4.controller;
 
-import com.example.casestudymodule4.model.Comment;
+import com.example.casestudymodule4.model.entity.Comment;
 import com.example.casestudymodule4.service.Comment.ICommentService;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
