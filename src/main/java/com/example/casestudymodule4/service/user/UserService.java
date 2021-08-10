@@ -15,13 +15,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 
 import java.security.Principal;
 import java.util.*;
 
 @Service
 public class UserService implements IUserService {
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private IRoleService roleService;
     @Autowired
@@ -29,6 +32,7 @@ public class UserService implements IUserService {
 
     @Override
     public void save(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
@@ -49,16 +53,17 @@ public class UserService implements IUserService {
 
     @Override
     public User getCurrentUser() {
-      User user;
-      String userName;
-      Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-      if(principal instanceof UserDetails){
-          userName = ((UserDetails) principal).getUsername();
-      } else {
-          userName = principal.toString();
-      }
-      user = this.findByUsername(userName);
-      return user;
+        User user;
+        String userName;
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            userName = ((UserDetails) principal).getUsername();
+        } else {
+            userName = principal.toString();
+        }
+        user = this.findByUsername(userName);
+        return user;
     }
 
     @Override
@@ -69,6 +74,7 @@ public class UserService implements IUserService {
         }
         return UserPrinciple.build(user.get());
     }
+
 
     @Override
     public boolean checkLogin(User user) {
@@ -90,20 +96,25 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // TODO Auto-generated method stub
-        User user=userRepository.findByUsername(username).get();
-
-        if(user != null && user.isEnabled()) {
-            List<GrantedAuthority> authorities = getUserAuthority(user.getRoles());
-            return buildUserForAuthentication(user, authorities);
+    @Transactional
+    public UserDetails loadUserByUsername(String username) {
+        User user = userRepository.findByUsername(username).get();
+        if (user == null) {
+            throw new UsernameNotFoundException(username);
+        } if (this.checkLogin(user)) {
+         return UserPrinciple.build(user);
+        }
+        boolean enable = false;
+        boolean accountNonExpired = false;
+        boolean credentialsNonExpired = false;
+        boolean accountNonLocked = false;
+        return new org.springframework.security.core.userdetails.User(user.getUsername(),
+                user.getPassword(), enable, accountNonExpired, credentialsNonExpired,
+                accountNonLocked, null);
         }
 
-        else {
-            throw new UsernameNotFoundException("username not found");
-        }
 
-    }
+
 
     private List<GrantedAuthority> getUserAuthority(Set<Role> userRoles) {
         Set<GrantedAuthority> roles = new HashSet<>();
@@ -124,8 +135,7 @@ public class UserService implements IUserService {
 
 //    @Autowired
 //    private IUserRepository userRepository;
-//    @Autowired
-//    private PasswordEncoder passwordEncoder;
+
 //
 //    @Override
 //    public Iterable<User> findAll() {

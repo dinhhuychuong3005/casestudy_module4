@@ -24,16 +24,29 @@ public class AdminController {
         return  new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/disable/{id}")
     public ResponseEntity<User> disableUser(@PathVariable Long id){
         Optional<User> userOptional = userService.findById(id);
         if(!userOptional.isPresent()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
-            userOptional.get().setEnabled(false) ;
+            userOptional.get().setEnabled(false);
+            userService.save(userOptional.get());
             return new ResponseEntity<>(HttpStatus.OK);
         }
 
+    }
+
+    @PutMapping("/enable/{id}")
+    public ResponseEntity<User> enableUser(@PathVariable Long id){
+        Optional<User> userOptional = userService.findById(id);
+        if(!userOptional.isPresent()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            userOptional.get().setEnabled(true);
+            userService.save(userOptional.get());
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
     }
 
 }
