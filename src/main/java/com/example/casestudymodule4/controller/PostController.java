@@ -47,7 +47,7 @@ public class PostController {
 
 
     //Save the uploaded file to this folder
-    private static String UPLOAD_DIR = "C:/Users/Hung/Desktop/casestudy_module4/img";
+    private static String UPLOAD_DIR = "img";
 
 
     @GetMapping("/test")
@@ -59,16 +59,21 @@ public class PostController {
     @PostMapping("/create")
     public ResponseEntity<?> multiUploadFileModel(@ModelAttribute UploadPost form) {
         Post post = new Post();
+        postService.save(post);
         logger.debug("Multiple file upload! With UploadModel");
         String result = null;
         try {
 
             result = this.saveUploadedFiles(form.getFiles());
+
             post.setContent(form.getContent());
             MultipartFile[] files = form.getFiles();
             List<Image> imgs = new ArrayList<>();
 
             for(MultipartFile file : files){
+                if (file.isEmpty()) {
+                    continue;
+                }
                 Image image = new Image(post.getId(), file.getOriginalFilename());
                 imgs.add(image);
                 imageService.save(image);
