@@ -16,7 +16,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotEmpty(message = "không được để trống!")
-    @Size(min = 2,max = 30,message = "độ dài ít nhất là 2 và không vượt quá 30 kí tự")
+    @Size(min = 2, max = 30, message = "độ dài ít nhất là 2 và không vượt quá 30 kí tự")
     @Column(unique = true, nullable = false)
     private String username;
 
@@ -25,9 +25,11 @@ public class User {
     @Min(value = 8, message = "Password phải từ 8 kí tự trở lên")
     private String password;
 
+
     @Column(nullable = false)
     @NotEmpty(message = "Thiếu name")
     private String fullName;
+
 
     private String address;
 
@@ -38,8 +40,8 @@ public class User {
 
     @Column(nullable = false)
     private String gender;
-
-    private String avatar;
+    @ManyToOne
+    private ImageUser imgUrl;
 
     private Date dateOfBirth;
     @ManyToMany(fetch = FetchType.EAGER)
@@ -51,7 +53,7 @@ public class User {
     public User() {
     }
 
-    public User(String username, String password, String fullName, String address, String email, String numberPhone, String gender, String avatar, Date dateOfBirth, Set<Role> roles) {
+    public User(String username, String password, String fullName, String address, String email, String numberPhone, String gender, ImageUser imgUrl, Date dateOfBirth, Set<Role> roles) {
         this.username = username;
         this.password = password;
         this.fullName = fullName;
@@ -59,17 +61,24 @@ public class User {
         this.email = email;
         this.numberPhone = numberPhone;
         this.gender = gender;
-        this.avatar = avatar;
+        this.imgUrl = imgUrl;
         this.dateOfBirth = dateOfBirth;
         this.roles = roles;
     }
 
-    public User(String username, String password, String fullName ) {
+    public User(String username, String password, String fullName) {
         this.username = username;
         this.password = password;
         this.fullName = fullName;
     }
 
+    public ImageUser getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(ImageUser imgUrl) {
+        this.imgUrl = imgUrl;
+    }
 
     public Long getId() {
         return id;
@@ -159,6 +168,5 @@ public class User {
     public Set<Role> getRoles() {
         return roles;
     }
-
 }
 
