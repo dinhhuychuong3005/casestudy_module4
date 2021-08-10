@@ -22,6 +22,13 @@ public class Comment {
         this.dateComment = dateComment;
         this.user = user;
     }
+
+    public Comment(String comment, Date dateComment, User user) {
+        this.comment = comment;
+        this.dateComment = dateComment;
+        this.user = user;
+    }
+
     public Comment(){
 
     }

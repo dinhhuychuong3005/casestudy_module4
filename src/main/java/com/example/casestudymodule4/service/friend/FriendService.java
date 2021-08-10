@@ -1,12 +1,17 @@
 package com.example.casestudymodule4.service.friend;
 
+
 import com.example.casestudymodule4.model.entity.Friend;
+
 import com.example.casestudymodule4.repository.IFriendRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+
 import java.util.Optional;
+
+import java.util.List;
+
 
 @Service
 public class FriendService implements IFriendService {
@@ -32,6 +37,7 @@ public class FriendService implements IFriendService {
     public void remove(Long id) {
         friendRepository.deleteById(id);
     }
+
 
     @Override
     public List<Friend> findAllFriendByIdUs(Long id) {
@@ -63,4 +69,5 @@ public class FriendService implements IFriendService {
     public Friend findFriendByUserIdAndIdFriendOfUser(Long userId, Long idUserFriend) {
         return friendRepository.findFriendByUserIdAndIdFriendOfUser(userId, idUserFriend);
     }
+
 }

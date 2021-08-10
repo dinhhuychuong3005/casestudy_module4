@@ -1,17 +1,16 @@
 package com.example.casestudymodule4.service.Comment;
 
+
 import com.example.casestudymodule4.model.entity.Comment;
 import com.example.casestudymodule4.repository.ICommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-
 @Service
-public class CommentService implements ICommentService {
+public class CommentService implements ICommentService{
     @Autowired
     private ICommentRepository commentRepository;
-
     @Override
     public Iterable<Comment> findAll() {
         return commentRepository.findAll();
@@ -29,6 +28,6 @@ public class CommentService implements ICommentService {
 
     @Override
     public void remove(Long id) {
-        commentRepository.deleteById(id);
+commentRepository.deleteById(id);
     }
 }

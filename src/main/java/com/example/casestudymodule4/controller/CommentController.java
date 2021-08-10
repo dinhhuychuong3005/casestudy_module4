@@ -1,7 +1,11 @@
 package com.example.casestudymodule4.controller;
 
+
 import com.example.casestudymodule4.model.entity.Comment;
+import com.example.casestudymodule4.model.entity.User;
 import com.example.casestudymodule4.service.Comment.ICommentService;
+import com.example.casestudymodule4.service.user.IUserService;
+import com.fasterxml.jackson.databind.node.TextNode;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.amqp.RabbitRetryTemplateCustomizer;
@@ -14,13 +18,21 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/Comment")
+@CrossOrigin("*")
 public class CommentController {
     @Autowired
     private ICommentService commentService;
+    @Autowired
+    private IUserService userService;
 
-    @PostMapping
-    public ResponseEntity<Comment> createComment(@RequestBody Comment comment) {
-        return new ResponseEntity<>(commentService.save(comment), HttpStatus.CREATED);
+    @PostMapping("/{id}")
+    public ResponseEntity<Comment> createComment(@PathVariable Long id,@RequestBody String comment) {
+        User user= userService.findById(id).get();
+        long millis = System.currentTimeMillis();
+        java.sql.Date dateComment = new java.sql.Date(millis);
+
+        Comment comment1 = new Comment(comment,dateComment,user);
+        return new ResponseEntity<>(commentService.save(comment1), HttpStatus.CREATED);
     }
 
     @GetMapping()
