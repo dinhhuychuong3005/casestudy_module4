@@ -77,7 +77,7 @@ document.getElementById("name").innerHTML = data.fullName
 
 </script>
 
-<body onload=" showUser(),getUserById(),checkTonke()">
+<body onload=" showUser(),getUserById(),checkTonke(),getListPost()">
 
 
 <div class="wrapper">
@@ -407,18 +407,23 @@ document.getElementById("name").innerHTML = data.fullName
                                     </div>
                                     <div class="post-st">
                                         <ul>
-                                            <li><a class="post_project" href="#" title="">Post a Project</a></li>
-                                            <li><a class="post-jb active" href="#" title="">Post a Job</a></li>
+<!--                                            <li><a class="post_project" href="#" title="">Post a Project</a></li>-->
+                                            <li><a class="post-jb active" href="#" title="">Post status</a></li>
                                         </ul>
                                     </div><!--post-st end-->
                                 </div><!--post-topbar end-->
-                                <div class="posts-section">
-                                    <div class="post-bar">
+                                <script>
+                                    function getListPost(){
+                                        $.ajax({
+                                            type: "GET",
+                                            url: "http://localhost:8080/api/posts/listPostFriend/" + localStorage.getItem("id"),
+                                            success: function (data){
+                                                let str = `
                                         <div class="post_topbar">
                                             <div class="usy-dt">
                                                 <img src="http://via.placeholder.com/50x50" alt="">
                                                 <div class="usy-name">
-                                                    <h3>John Doe</h3>
+                                                    <h3>`+ data[0].user.fullName +`</h3>
                                                     <span><img src="images/clock.png" alt="">3 min ago</span>
                                                 </div>
                                             </div>
@@ -426,7 +431,7 @@ document.getElementById("name").innerHTML = data.fullName
                                                 <a href="#" title="" class="ed-opts-open"><i
                                                         class="la la-ellipsis-v"></i></a>
                                                 <ul class="ed-options">
-                                                    <li><a href="#" title="">Edit Post</a></li>
+                                                    <li><a class="post-jb active" href="#" title="">Edit Post</a></li>
                                                     <li><a href="#" title="">Unsaved</a></li>
                                                     <li><a href="#" title="">Unbid</a></li>
                                                     <li><a href="#" title="">Close</a></li>
@@ -444,15 +449,8 @@ document.getElementById("name").innerHTML = data.fullName
                                                 <li><a href="#" title=""><i class="la la-envelope"></i></a></li>
                                             </ul>
                                         </div>
-                                        <div class="job_descp">
-                                            <h3>Senior Wordpress Developer</h3>
-                                            <ul class="job-dt">
-                                                <li><a href="#" title="">Full Time</a></li>
-                                                <li><span>$30 / hr</span></li>
-                                            </ul>
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam luctus
-                                                hendrerit metus, ut ullamcorper quam finibus at. Etiam id magna sit
-                                                amet... <a href="#" title="">view more</a></p>
+                                        <div class="job_descp" id="postFriend">
+                                            <p> `+ data[0].content +` <a href="#" title="">view more</a></p>
                                             <ul class="skill-tags">
                                                 <li><a href="#" title="">HTML</a></li>
                                                 <li><a href="#" title="">PHP</a></li>
@@ -473,7 +471,16 @@ document.getElementById("name").innerHTML = data.fullName
                                             </ul>
                                             <a><i class="la la-eye"></i>Views 50</a>
                                         </div>
-                                    </div><!--post-bar end-->
+                                   `;
+document.getElementById("post").innerHTML = str;
+                                            }
+                                        })
+                                    }
+                                </script>
+                                <div class="posts-section">
+                                    <div class="post-bar"  id="post">
+                                    </div>
+                                    <!--post-bar end-->
                                     <div class="top-profiles">
                                         <div class="pf-hd">
                                             <h3>Top Profiles</h3>
@@ -927,58 +934,58 @@ document.getElementById("name").innerHTML = data.fullName
     </main>
 
 
-    <div class="post-popup pst-pj">
-        <div class="post-project">
-            <h3>Post a project</h3>
-            <div class="post-project-fields">
-                <form>
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <input type="text" name="title" placeholder="Title">
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="inp-field">
-                                <select>
-                                    <option>Category</option>
-                                    <option>Category 1</option>
-                                    <option>Category 2</option>
-                                    <option>Category 3</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <input type="text" name="skills" placeholder="Skills">
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="price-sec">
-                                <div class="price-br">
-                                    <input type="text" name="price1" placeholder="Price">
-                                    <i class="la la-dollar"></i>
-                                </div>
-                                <span>To</span>
-                                <div class="price-br">
-                                    <input type="text" name="price1" placeholder="Price">
-                                    <i class="la la-dollar"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <textarea name="description" placeholder="Description"></textarea>
-                        </div>
-                        <div class="col-lg-12">
-                            <ul>
-                                <li>
-                                    <button class="active" type="submit" value="post">Post</button>
-                                </li>
-                                <li><a href="#" title="">Cancel</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </form>
-            </div><!--post-project-fields end-->
-            <a href="#" title=""><i class="la la-times-circle-o"></i></a>
-        </div><!--post-project end-->
-    </div><!--post-project-popup end-->
+<!--    <div class="post-popup pst-pj">-->
+<!--        <div class="post-project">-->
+<!--            <h3>Post a project</h3>-->
+<!--            <div class="post-project-fields">-->
+<!--                <form>-->
+<!--                    <div class="row">-->
+<!--&lt;!&ndash;                        <div class="col-lg-12">&ndash;&gt;-->
+<!--&lt;!&ndash;                            <input type="text" name="title" placeholder="Title">&ndash;&gt;-->
+<!--&lt;!&ndash;                        </div>&ndash;&gt;-->
+<!--                        <div class="col-lg-12">-->
+<!--                            <div class="inp-field">-->
+<!--                                <select>-->
+<!--                                    <option>Category</option>-->
+<!--                                    <option>Category 1</option>-->
+<!--                                    <option>Category 2</option>-->
+<!--                                    <option>Category 3</option>-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--&lt;!&ndash;                        <div class="col-lg-12">&ndash;&gt;-->
+<!--&lt;!&ndash;                            <input type="text" name="skills" placeholder="Skills">&ndash;&gt;-->
+<!--&lt;!&ndash;                        </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                        <div class="col-lg-12">&ndash;&gt;-->
+<!--&lt;!&ndash;                            <div class="price-sec">&ndash;&gt;-->
+<!--&lt;!&ndash;                                <div class="price-br">&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <input type="text" name="price1" placeholder="Price">&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <i class="la la-dollar"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;                                </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                <span>To</span>&ndash;&gt;-->
+<!--&lt;!&ndash;                                <div class="price-br">&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <input type="text" name="price1" placeholder="Price">&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <i class="la la-dollar"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;                                </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                            </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                        </div>&ndash;&gt;-->
+<!--                        <div class="col-lg-12">-->
+<!--                            <textarea name="description" placeholder="Description"></textarea>-->
+<!--                        </div>-->
+<!--                        <div class="col-lg-12">-->
+<!--                            <ul>-->
+<!--                                <li>-->
+<!--                                    <button class="active" type="submit" value="post">Post</button>-->
+<!--                                </li>-->
+<!--                                <li><a href="#" title="">Cancel</a></li>-->
+<!--                            </ul>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </form>-->
+<!--            </div>&lt;!&ndash;post-project-fields end&ndash;&gt;-->
+<!--            <a href="#" title=""><i class="la la-times-circle-o"></i></a>-->
+<!--        </div>&lt;!&ndash;post-project end&ndash;&gt;-->
+<!--    </div>&lt;!&ndash;post-project-popup end&ndash;&gt;-->
 
     <div class="post-popup job_post">
         <div class="post-project">
@@ -986,36 +993,34 @@ document.getElementById("name").innerHTML = data.fullName
             <div class="post-project-fields">
                 <form>
                     <div class="row">
-                        <div class="col-lg-12">
-                            <input type="text" name="title" placeholder="Title">
-                        </div>
+<!--                        <div class="col-lg-12">-->
+<!--                            <input type="text" name="title" placeholder="Title">-->
+<!--                        </div>-->
                         <div class="col-lg-12">
                             <div class="inp-field">
-                                <select>
-                                    <option>Category</option>
-                                    <option>Category 1</option>
-                                    <option>Category 2</option>
-                                    <option>Category 3</option>
+                                <select id="status">
+                                    <option value="1">Public</option>
+                                    <option value="2">Private</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-lg-12">
-                            <input type="text" name="skills" placeholder="Skills">
+                            <input type="file" id="img" name="img" placeholder="img">
                         </div>
-                        <div class="col-lg-6">
-                            <div class="price-br">
-                                <input type="text" name="price1" placeholder="Price">
-                                <i class="la la-dollar"></i>
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="inp-field">
-                                <select>
-                                    <option>Full Time</option>
-                                    <option>Half time</option>
-                                </select>
-                            </div>
-                        </div>
+<!--                        <div class="col-lg-6">-->
+<!--                            <div class="price-br">-->
+<!--                                <input type="text" name="price1" placeholder="Price">-->
+<!--                                <i class="la la-dollar"></i>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="col-lg-6">-->
+<!--                            <div class="inp-field">-->
+<!--                                <select>-->
+<!--                                    <option>Full Time</option>-->
+<!--                                    <option>Half time</option>-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                        </div>-->
                         <div class="col-lg-12">
                             <textarea name="description" placeholder="Description"></textarea>
                         </div>
