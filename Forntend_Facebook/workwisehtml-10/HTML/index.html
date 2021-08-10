@@ -1263,11 +1263,8 @@ document.getElementById("name").innerHTML = data.fullName
     }
 
     function addNewComment(){
-        let comment =$('#comment').val();
+        let newComment =$('#comment').val();
 
-        let newComment={
-            comment:comment
-        };
         $.ajax({
             header:{
                 'Accept': 'application/json',

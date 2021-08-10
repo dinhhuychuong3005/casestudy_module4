@@ -25,7 +25,7 @@ public class CommentController {
     private IUserService userService;
 
     @PostMapping("/{id}")
-    public ResponseEntity<Comment> createComment(@PathVariable Long id,@RequestParam String comment) {
+    public ResponseEntity<Comment> createComment(@PathVariable Long id,@RequestBody String comment) {
         User user= userService.findById(id).get();
         long millis = System.currentTimeMillis();
         java.sql.Date dateComment = new java.sql.Date(millis);
