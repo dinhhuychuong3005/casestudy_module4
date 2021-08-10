@@ -16,7 +16,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotEmpty(message = "không được để trống!")
-    @Size(min = 2,max = 30,message = "độ dài ít nhất là 2 và không vượt quá 30 kí tự")
+    @Size(min = 2, max = 30, message = "độ dài ít nhất là 2 và không vượt quá 30 kí tự")
     @Column(unique = true, nullable = false)
     private String username;
 
@@ -40,8 +40,8 @@ public class User {
 
     @Column(nullable = false)
     private String gender;
-
-    private String avatar;
+    @ManyToOne
+    private ImageUser imgUrl;
 
     private Date dateOfBirth;
     @ManyToMany(fetch = FetchType.EAGER)
@@ -51,38 +51,6 @@ public class User {
     private Set<Role> roles;
     private boolean enabled=true;
 
-    public User() {
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public User(Long id, String username, String password, String fullName, String address, String email, String numberPhone, String gender, String avatar, Date dateOfBirth, Set<Role> roles, boolean enabled) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.fullName = fullName;
-        this.address = address;
-        this.email = email;
-        this.numberPhone = numberPhone;
-        this.gender = gender;
-        this.avatar = avatar;
-        this.dateOfBirth = dateOfBirth;
-        this.roles = roles;
-        this.enabled = enabled;
-    }
-
-    public User(String username, String password, String fullName) {
-        this.username = username;
-        this.password = password;
-        this.fullName = fullName;
-    }
-
     public Long getId() {
         return id;
     }
@@ -91,45 +59,20 @@ public class User {
         this.id = id;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setNumberPhone(String numberPhone) {
-        this.numberPhone = numberPhone;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
     public String getUsername() {
         return username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getPassword() {
         return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getFullName() {
@@ -144,8 +87,24 @@ public class User {
         return address;
     }
 
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public String getEmail() {
         return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getNumberPhone() {
+        return numberPhone;
+    }
+
+    public void setNumberPhone(String numberPhone) {
+        this.numberPhone = numberPhone;
     }
 
     public String getGender() {
@@ -156,20 +115,54 @@ public class User {
         this.gender = gender;
     }
 
-    public String getNumberPhone() {
-        return numberPhone;
+    public ImageUser getImgUrl() {
+        return imgUrl;
     }
 
-    public String getAvatar() {
-        return avatar;
+    public void setImgUrl(ImageUser imgUrl) {
+        this.imgUrl = imgUrl;
     }
 
     public Date getDateOfBirth() {
         return dateOfBirth;
     }
 
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
     public Set<Role> getRoles() {
         return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public User() {
+    }
+
+    public User(Long id, String username, String password, String fullName, String address, String email, String numberPhone, String gender, ImageUser imgUrl, Date dateOfBirth, Set<Role> roles, boolean enabled) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.fullName = fullName;
+        this.address = address;
+        this.email = email;
+        this.numberPhone = numberPhone;
+        this.gender = gender;
+        this.imgUrl = imgUrl;
+        this.dateOfBirth = dateOfBirth;
+        this.roles = roles;
+        this.enabled = enabled;
     }
 }
 

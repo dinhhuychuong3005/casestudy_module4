@@ -17,10 +17,11 @@
 <link rel="stylesheet" type="text/css" href="lib/slick/slick-theme.css">
 <link rel="stylesheet" type="text/css" href="css/style.css">
 <link rel="stylesheet" type="text/css" href="css/responsive.css">
+	<script src="checkToken.js"></script>
 </head>
 
 
-<body>
+<body onload="checkTonke()">
 	
 
 	<div class="wrapper">
@@ -54,7 +55,7 @@
 								</a>
 								<ul>
 									<li><a href="companies.html" title="">Companies</a></li>
-									<li><a href="company-profile.html" title="">Company Profile</a></li>
+									<li><a href="No/company-profile.html" title="">Company Profile</a></li>
 								</ul>
 							</li>
 							<li>
@@ -74,7 +75,7 @@
 								</ul>
 							</li>
 							<li>
-								<a href="jobs.html" title="">
+								<a href="No/jobs.html" title="">
 									<span><img src="images/icon5.png" alt=""></span>
 									Jobs
 								</a>
@@ -226,7 +227,7 @@
 								<li><a href="#" title="">Faqs</a></li>
 								<li><a href="#" title="">Terms & Conditions</a></li>
 							</ul>
-							<h3 class="tc"><a href="sign-in.html" title="">Logout</a></h3>
+							<h3 class="tc"><a href="sign-in.html" onclick="setItem()" title="">Logout</a></h3>
 						</div><!--user-account-settingss end-->
 					</div>
 				</div><!--header-data end-->
@@ -235,7 +236,7 @@
 
 <script>
 
-		let url = document.getElementById("img").value;
+
 
 </script>
 		<section class="cover-sec">
