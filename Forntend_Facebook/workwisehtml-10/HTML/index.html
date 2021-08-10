@@ -17,6 +17,7 @@
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="stylesheet" type="text/css" href="css/responsive.css">
     <script src="checkToken.js"></script>
+    <script src="idPost.js"></script>
 </head>
 <script>
     function addFriend(id) {
@@ -56,10 +57,13 @@
                    <li><a href="#" title="" class="hire">hire</a></li>
                </ul>
                    <a href="user-profile.html" onclick="getUserById1(` + data[i].id + `)" title="">View Profile</a>
-                                  </div>
+
+ </div>
                                    `
-                    document.getElementById("friendAdd").innerHTML = str;
+
                 }
+
+                document.getElementById("friendAdd").innerHTML = str;
             }
         })
     }
@@ -72,6 +76,22 @@
             success: function (data) {
                 localStorage.setItem("fullName", data.fullName)
                 document.getElementById("name").innerHTML = data.fullName
+            }
+        })
+    }
+    function showCommentByPost(idPost) {
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:8080/api/posts/showComment/" + idPost,
+            headers: {"Authorization": 'Bearer ' + localStorage.getItem("token")},
+            success: function (data) {
+
+                window.location.href = "forum-post-view.html";
+                console.log(data)
+                console.log(``+data.content+``)
+                localStorage.setItem("content",data.content)
+                localStorage.setItem("idPost_comment",data.id)
+
             }
         })
     }
@@ -472,10 +492,10 @@
                                                     <img src="images/liked-img.png" alt="">
                                                     <span>25</span>
                                                 </li>
-                                                <li><a href=""  onclick="checkView(` + data[0].id + `)" title="" class="com"><img src="images/com.png" alt="">
+                                                <li><a   onclick="checkView(` + data[0].id + `),showCommentByPost(`+ data[0].id   +`)" title="" class="com"><img src="images/com.png" alt="">
                                                     Comment 15</a></li>
                                             </ul>
-                                            <a onclick="createComment()"><i class="la la-eye"></i>Views ${data[0].view}</a>
+                                            <a ><i class="la la-eye"></i>Views ${data[0].view}</a>
                                         </div>
 <div class="comment-section">
   <div class="post-comment">
@@ -502,19 +522,31 @@
                                         let comment = {
                                             comment: postComment
                                         }
-                                        $.ajax({
-                                            headers: {
-                                                'Accept': 'application/json',
-                                                'Content-type': 'application/json'
-                                            },
-                                            type: "POST",
-                                            data: JSON.stringify(comment),
-                                            url: "http://localhost:8080/api/Comment/" + localStorage.getItem("id") + "?comment=" + postComment,
+                                        if (postComment == "") {
+                                        } else {
+                                            $.ajax({
+                                                headers: {
+                                                    'Accept': 'application/json',
+                                                    'Content-type': 'application/json'
+                                                },
+                                                type: "POST",
+                                                data: JSON.stringify(comment),
+                                                url: "http://localhost:8080/api/Comment/" + localStorage.getItem("id") + "?comment=" + postComment,
 
-                                            success: function (data) {
-                                                console.log(data)
-                                            }
-                                        })
+                                                success: function (data) {
+                                                    console.log(data)
+                                                }
+                                            })
+                                        }
+                                    }
+
+                                    function checkComment() {
+                                        let postComment = document.getElementById("postComment").value;
+                                        if (postComment == "") {
+
+                                        } else {
+
+                                        }
                                     }
 
                                     function checkView(id) {
@@ -535,7 +567,7 @@
                                             <i class="la la-ellipsis-v"></i>
                                         </div>
                                         <div>
-                                            <div class="profiles-slider" id="friendAdd">
+                                            <div class="profiles-slider " id="friendAdd">
                                                 <!--                                            <div class="user-profy" >-->
                                                 <!--                                                <img src="http://via.placeholder.com/57x57" alt="">-->
                                                 <!--                                                <h3>John Doe</h3>-->
@@ -1053,7 +1085,7 @@
                             </div>
                         </div>
                         <div class="col-lg-12">
-                            <input type="file" id="img" name="img" placeholder="img">
+
                         </div>
                         <!--                        <div class="col-lg-6">-->
                         <!--                            <div class="price-br">-->

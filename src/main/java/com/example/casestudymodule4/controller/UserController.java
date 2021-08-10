@@ -22,7 +22,7 @@ public class UserController {
         user.setId(user1.get().getId());
         user.setUsername(user1.get().getUsername());
         user.setAddress(user1.get().getAddress());
-        user.setAvatar(user1.get().getAvatar());
+        user.setImgUrl(user1.get().getImgUrl());
         user.setEmail(user1.get().getEmail());
         user.setDateOfBirth(user1.get().getDateOfBirth());
         user.setFullName(user1.get().getFullName());

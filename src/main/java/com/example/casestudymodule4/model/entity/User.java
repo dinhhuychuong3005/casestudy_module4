@@ -109,9 +109,7 @@ public class User {
         this.numberPhone = numberPhone;
     }
 
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
+
 
     public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
@@ -157,9 +155,7 @@ public class User {
         return numberPhone;
     }
 
-    public String getAvatar() {
-        return avatar;
-    }
+
 
     public Date getDateOfBirth() {
         return dateOfBirth;

@@ -1,5 +1,6 @@
 package com.example.casestudymodule4.controller;
 
+import com.example.casestudymodule4.model.entity.Comment;
 import com.example.casestudymodule4.model.entity.Friend;
 import com.example.casestudymodule4.model.entity.Post;
 import com.example.casestudymodule4.model.entity.User;
@@ -103,5 +104,12 @@ public class PostController {
         postService.save(post.get());
         return new ResponseEntity<>(post.get(),HttpStatus.OK);
     }
+    @GetMapping("/showComment/{id}")
+    public ResponseEntity<Post> findCommentByIdPost(@PathVariable Long id){
+        Optional<Post> posts = postService.findById(id);
+//        List<Comment> comments = posts.get().getListComment();
+        return new ResponseEntity<>(posts.get(),HttpStatus.OK);
+    }
+
 }
 
