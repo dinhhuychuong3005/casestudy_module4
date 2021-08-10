@@ -25,4 +25,6 @@ public interface IFriendService extends IGeneralService<Friend> {
     public List<Friend> findAllFriendByIdFr(@Param("id") Long id);
 
     public Friend findFriendByUserIdAndIdFriendOfUser(Long userId,Long idUserFriend);
+
+
 }

@@ -22,7 +22,18 @@
 <script>
 
 
+    function deleteFriend(id) {
 
+        $.ajax({
+            type: "DELETE",
+            url: "http://localhost:8080/api/friend/deleteFriend/" + localStorage.getItem("id") + "/" + id,
+            headers: {"Authorization": 'Bearer ' + localStorage.getItem("token")},
+            success: function () {
+                alert("Bạn có muốn xóa không ?")
+                showFriendAdd()
+            }
+        })
+    }
     function showFriendAdd() {
         $.ajax({
             type: "GET",
@@ -58,7 +69,7 @@
                                                         <button type="submit" onclick="addFriendUs(` + data[i].user.id + `)" class="accept-req">Accept</button>
                                                     </li>
                                                     <li>
-                                                        <button type="submit" class="close-req"><i
+                                                        <button type="button" onclick="deleteFriend(` + data[i].user.id + `)" class="close-req"><i
                                                                 class="la la-close"></i></button>
                                                     </li>
                                                 </ul>

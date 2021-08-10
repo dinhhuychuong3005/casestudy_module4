@@ -16,15 +16,16 @@
     <link rel="stylesheet" type="text/css" href="lib/slick/slick-theme.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="stylesheet" type="text/css" href="css/responsive.css">
+    <script src="checkToken.js"></script>
 </head>
 <script>
-    function addFriend() {
-        let idFriend = document.getElementById("idFriendAdd").value;
+    function addFriend(id) {
 
-        console.log(idFriend)
+
+        console.log(id)
         $.ajax({
             type: "GET",
-            url: "http://localhost:8080/api/friend/addFriend/" + localStorage.getItem("id") + "/" + idFriend  ,
+            url: "http://localhost:8080/api/friend/addFriend/" + localStorage.getItem("id") + "/" + id  ,
             headers: {"Authorization": 'Bearer ' + localStorage.getItem("token")},
             success:showUser
 
@@ -44,16 +45,16 @@ console.log(data[i].id)
                     str += `
 
                                 <div class="user-profy">
-                                <input type="hidden" id="idFriendAdd" value="\`+ data[i].id +\`">
+
                             <img src="http://via.placeholder.com/57x57" alt="">
                          <h3>` + data[i].fullName + `</h3>
                           <span>Graphic Designer</span>
                             <ul>
-                   <li><a href="#" title="" onclick="addFriend()" class="followw">Follow</a></li>
+                   <li><a href="#" title="" onclick="addFriend(`+ data[i].id +`)" class="followw">Follow</a></li>
                <li><a href="#" title="" class="envlp"><img src="images/envelop.png" alt=""></a></li>
                    <li><a href="#" title="" class="hire">hire</a></li>
                </ul>
-                   <a href="#" title="">View Profile</a>
+                   <a href="user-profile.html" onclick="getUserById1(` + data[i].id + `)" title="">View Profile</a>
                                   </div>
                                    `
                     document.getElementById("friendAdd").innerHTML = str;
@@ -76,7 +77,7 @@ document.getElementById("name").innerHTML = data.fullName
 
 </script>
 
-<body onload=" showUser(),getUserById()">
+<body onload=" showUser(),getUserById(),checkTonke()">
 
 
 <div class="wrapper">
@@ -267,7 +268,7 @@ document.getElementById("name").innerHTML = data.fullName
                                 </div>
                             </li>
                         </ul>
-                        <h3><a href="user-profile.html">User page</a></h3>
+                        <h3><a href="my-profile-feed.html">User page</a></h3>
                         <div class="search_form">
                             <form>
                                 <input type="text" name="search">
@@ -281,7 +282,7 @@ document.getElementById("name").innerHTML = data.fullName
                             <li><a href="#" title="">Faqs</a></li>
                             <li><a href="#" title="">Terms & Conditions</a></li>
                         </ul>
-                        <h3 class="tc"><a href="sign-in.html" title="">Logout</a></h3>
+                        <h3 class="tc"><a href="sign-in.html" onclick="setItem()" title="">Logout</a></h3>
                     </div><!--user-account-settingss end-->
                 </div>
             </div><!--header-data end-->
