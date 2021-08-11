@@ -38,13 +38,13 @@ public class LikePostController {
         return new ResponseEntity<>(likePostOptional.get(), HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<LikePost> saveEditLikePost(@PathVariable Long id, @RequestBody LikePost likePost) {
-        Optional<LikePost> likePostOptional = likePostService.findById(id);
-        if (!likePostOptional.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        likePost.setId(likePostOptional.get().getId());
-        return new ResponseEntity<>(likePostService.save(likePost),HttpStatus.OK);
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<LikePost> saveEditLikePost(@PathVariable Long id, @RequestBody LikePost likePost) {
+//        Optional<LikePost> likePostOptional = likePostService.findById(id);
+//        if (!likePostOptional.isPresent()) {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//        likePost.setId(likePostOptional.get().getId());
+//        return new ResponseEntity<>(likePostService.save(likePost),HttpStatus.OK);
+//    }
 }
