@@ -1,21 +1,30 @@
 package com.example.casestudymodule4.controller;
 
-import com.example.casestudymodule4.model.entity.Comment;
-import com.example.casestudymodule4.model.entity.Friend;
-import com.example.casestudymodule4.model.entity.Post;
-import com.example.casestudymodule4.model.entity.User;
+import com.example.casestudymodule4.model.UploadPost;
+import com.example.casestudymodule4.model.entity.*;
 import com.example.casestudymodule4.service.friend.IFriendService;
+import com.example.casestudymodule4.service.image.IImageService;
 import com.example.casestudymodule4.service.post.IPostService;
 import com.example.casestudymodule4.service.user.IUserService;
 import com.example.casestudymodule4.service.user.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.Repository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +38,9 @@ public class PostController {
     private IPostService postService;
     @Autowired
     private IFriendService friendService;
+    @Autowired
+    private IImageService imageService;
+    private final Logger logger = LoggerFactory.getLogger(PostController.class);
 
     @GetMapping("")
     public ResponseEntity<Iterable<Post>> findAll() {
@@ -83,7 +95,7 @@ public class PostController {
     @GetMapping("/listPostFriend/{id}")
     public ResponseEntity<Iterable<Post>> getAllPostFriend(@PathVariable Long id) {
         List<User> users = showListFriend(id);
-        List<Post> posts ;
+        List<Post> posts;
         List<Post> posts1 = new ArrayList<>();
         List<Post> postUser = (List<Post>) postService.findAllByUserIdAndByStatus(id);
         for (int i = 0; i < postUser.size(); i++) {
@@ -91,7 +103,7 @@ public class PostController {
         }
         for (int i = 0; i < users.size(); i++) {
             System.out.println(users.get(i).getId());
-                posts = (List<Post>) postService.findAllByUserIdAndByStatus(users.get(i).getId());
+            posts = (List<Post>) postService.findAllByUserIdAndByStatus(users.get(i).getId());
             if (postService.findAllByUserIdAndByStatus(users.get(i).getId()) != null) {
                 for (int j = 0; j < posts.size(); j++) {
                     posts1.add(posts.get(j));
@@ -101,14 +113,85 @@ public class PostController {
         }
         return new ResponseEntity<>(posts1, HttpStatus.OK);
     }
+
     @GetMapping("/views/{id}")
-    public ResponseEntity<Post> checkView(@PathVariable Long id){
+    public ResponseEntity<Post> checkView(@PathVariable Long id) {
         Optional<Post> post = postService.findById(id);
-        post.get().setView(post.get().getView()+1);
+        post.get().setView(post.get().getView() + 1);
         postService.save(post.get());
-        return new ResponseEntity<>(post.get(),HttpStatus.OK);
+        return new ResponseEntity<>(post.get(), HttpStatus.OK);
     }
 
+    private static String UPLOAD_DIR = "D:\\module4\\casestudy-module4\\Forntend_Facebook\\workwisehtml-10\\HTML\\img\\";
 
+
+//    @GetMapping("/test")
+//    public ModelAndView test(){
+//        return new ModelAndView("/test");
+//    }
+
+    //maps html form to a Model
+    @PostMapping("/create")
+    public ResponseEntity<?> multiUploadFileModel(@RequestBody UploadPost form) {
+        Post post = new Post();
+        postService.save(post);
+        logger.debug("Multiple file upload! With UploadModel");
+        String result = null;
+        try {
+
+            result = this.saveUploadedFiles(form.getFiles());
+
+            post.setContent(form.getContent());
+            MultipartFile[] files = form.getFiles();
+            List<Image> imgs = new ArrayList<>();
+
+            for (MultipartFile file : files) {
+                if (file.isEmpty()) {
+                    continue;
+                }
+                Image image = new Image(post.getId(), UPLOAD_DIR + "/" + file.getOriginalFilename());
+                imgs.add(image);
+                imageService.save(image);
+            }
+            post.setImgs(imgs);
+            post.setDatePost(new Date(Calendar.getInstance().getTime().getTime()));
+
+            post.setView(0);
+            post.setStatus(1);
+            post.setUser(form.getUser());
+            postService.save(post);
+
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+
+        return new ResponseEntity<String>("Uploaded to: <br/>" + result, HttpStatus.OK);
+
+    }
+
+    private String saveUploadedFiles(MultipartFile[] files) throws IOException {
+
+        // Make sure directory exists!
+        File uploadDir = new File(UPLOAD_DIR);
+        uploadDir.mkdirs();
+
+        StringBuilder sb = new StringBuilder();
+
+        for (MultipartFile file : files) {
+
+            if (file.isEmpty()) {
+                continue;
+            }
+            String uploadFilePath = UPLOAD_DIR + "/" + file.getOriginalFilename();
+
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get(uploadFilePath);
+            Files.write(path, bytes);
+
+            sb.append(uploadFilePath).append("<br/>");
+        }
+        return sb.toString();
+    }
 }
 

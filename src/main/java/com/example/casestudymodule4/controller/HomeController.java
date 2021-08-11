@@ -64,9 +64,17 @@ public class HomeController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> registerAccount(@RequestBody @Valid User user) {
-        userService.save(user);
-        return new ResponseEntity<>(userService.findById(user.getId()).get(),HttpStatus.OK);
+    public ResponseEntity<User> registerAccount(@RequestBody User user) {
+        Optional<User> userOptional = userService.findByUserName(user.getUsername());
+        Optional<User> userOptional1 = userService.findByFullName(user.getFullName());
+        if (userOptional.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else if (userOptional1.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            userService.save(user);
+            return new ResponseEntity<>(userService.findById(user.getId()).get(), HttpStatus.OK);
+        }
     }
 //    @PostMapping("/sendEmail/{email}") //gửi email
 //    public ResponseEntity<SimpleMailMessage> sendSimpleEmail(@PathVariable String email) {

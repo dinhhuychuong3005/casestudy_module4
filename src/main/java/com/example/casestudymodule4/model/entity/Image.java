@@ -20,6 +20,9 @@ public class Image {
     public Image() {
     }
 
+    public Image(Long id, String s) {
+    }
+
     public Image(Long id, Long postId, String linkImage, User user) {
         this.id = id;
         this.postId = postId;
