@@ -537,7 +537,7 @@
                                             url: "http://localhost:8080/api/posts/listPostFriend/" + localStorage.getItem("id"),
                                             success: function (data) {
                                                 let str = "";
-                                                for (let i = 0; i < data.length; i++) {
+                                                for (let i = 1; i < data.length; i++) {
 
                                                     $.ajax({
                                                         type: "GET",
@@ -549,6 +549,20 @@
                                                             console.log(data1.length)
                                                         }
                                                     })
+                                                    let date1 = new Date();
+                                                    let datePost = new Date(data[i].datePost)
+                                                    let datePost1;
+                                                    if ((datePost.getSeconds() < date1.getSeconds()) && (datePost.getMinutes() == date1.getMinutes()) && (datePost.getHours() == date1.getHours()) && (datePost.getDate() == date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
+                                                        datePost1 = " " + (date1.getSeconds() - datePost.getSeconds()) + " giây trước"
+                                                    } else if ((datePost.getMinutes() < date1.getMinutes()) && (datePost.getHours() == date1.getHours()) && (datePost.getDate() == date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
+                                                        datePost1 = " " + (datePost.getMinutes() - datePost.getMinutes()) + " phút trước";
+                                                    } else if ((datePost.getHours() < date1.getHours()) && (datePost.getDate() == date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
+                                                        datePost1 = " " + (date1.getHours() - datePost.getHours()) + " giờ trước"
+                                                    } else if ((datePost.getDate() < date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
+                                                        datePost1 = " " + (date1.getDay() - datePost.getDay()) + " ngày trước";
+                                                    } else {
+                                                        datePost1 = " " + (date1.getFullYear() - datePost.getFullYear()) + " năm trước";
+                                                    }
                                                      str += `
   <div class="posty">
 
@@ -557,7 +571,7 @@
                                                 <img src="http://via.placeholder.com/50x50" alt="">
                                                 <div class="usy-name">
                                                     <h3>` + data[i].user.fullName + `</h3>
-                                                    <span><img src="images/clock.png" alt="">3 min ago</span>
+                                                    <span><img src="images/clock.png" alt="">`+ datePost1 +`</span>
                                                 </div>
                                             </div>
                                             <div class="ed-opts">
@@ -614,8 +628,8 @@
                                                 </div>
                                                 <div class="comment_box">
                                                     <!--                                                    <form>-->
-                                                <input type="text" id="postComment" placeholder="Post a comment">
-                                                <button type="button" onclick="createComment1(` + data[i].id + `)">Send</button>
+                                                <input type="text" id="postComment1" placeholder="Post a comment">
+                                                <button type="button" onclick="createComment2(` + data[i].id + `)">Send</button>
                                                     <!--                                                    </form>-->
                                                 </div>
                                                 </div>
@@ -626,6 +640,27 @@
                                                 document.getElementById("post2").innerHTML = str;
                                                 }
                                         })
+                                    }
+                                    function createComment2(idPost) {
+                                        let postComment = document.getElementById("postComment1").value;
+                                        console.log(postComment)
+
+                                        if (postComment == "") {
+                                        } else {
+                                            $.ajax({
+                                                headers: {
+                                                    'Accept': 'application/json',
+                                                    'Content-type': 'application/json'
+                                                },
+                                                type: "POST",
+                                                data: JSON.stringify(postComment),
+                                                url: "http://localhost:8080/api/Comment/" + localStorage.getItem("id") + "/" + idPost + "?comment=" + postComment,
+
+                                                success: function (data) {
+                                                    getListPost()
+                                                }
+                                            })
+                                        }
                                     }
 
                                     function createComment1(idPost) {
