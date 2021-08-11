@@ -1,7 +1,5 @@
 package com.example.casestudymodule4.model.entity;
 
-import com.example.casestudymodule4.model.entity.Role;
-
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
@@ -12,6 +10,8 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 public class User {
+    private static final Avatar a = new Avatar("https://scontent.fhph2-1.fna.fbcdn.net/v/t1.30497-1/143086968_2856368904622192_1959732218791162458_n.png?_nc_cat=1&ccb=1-4&_nc_sid=7206a8&_nc_ohc=ascCGU_Zw6wAX8dIzZZ&_nc_ht=scontent.fhph2-1.fna&oh=77bf564c386cc2e30e1c8b21c7499ff8&oe=61370CF8");
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -40,8 +40,11 @@ public class User {
 
     @Column(nullable = false)
     private String gender;
-    @ManyToOne
-    private ImageUser imgUrl;
+    @OneToOne
+    @JoinColumn(name = "avatar_id")
+    private Avatar imgUrl = a;
+
+
 
     private Date dateOfBirth;
     @ManyToMany(fetch = FetchType.EAGER)
@@ -115,11 +118,11 @@ public class User {
         this.gender = gender;
     }
 
-    public ImageUser getImgUrl() {
+    public Avatar getImgUrl() {
         return imgUrl;
     }
 
-    public void setImgUrl(ImageUser imgUrl) {
+    public void setImgUrl(Avatar imgUrl) {
         this.imgUrl = imgUrl;
     }
 
@@ -150,7 +153,7 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String username, String password, String fullName, String address, String email, String numberPhone, String gender, ImageUser imgUrl, Date dateOfBirth, Set<Role> roles, boolean enabled) {
+    public User(Long id, String username, String password, String fullName, String address, String email, String numberPhone, String gender, Avatar imgUrl, Date dateOfBirth, Set<Role> roles, boolean enabled) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -164,5 +167,7 @@ public class User {
         this.roles = roles;
         this.enabled = enabled;
     }
+
+
 }
 

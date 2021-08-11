@@ -22,11 +22,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.sql.Date;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -50,10 +47,10 @@ public class PostController {
     private static String UPLOAD_DIR = "img";
 
 
-    @GetMapping("/test")
-    public ModelAndView test(){
-        return new ModelAndView("/test");
-    }
+//    @GetMapping("/test")
+//    public ModelAndView test(){
+//        return new ModelAndView("/test");
+//    }
 
     //maps html form to a Model
     @PostMapping("/create")
@@ -74,11 +71,16 @@ public class PostController {
                 if (file.isEmpty()) {
                     continue;
                 }
-                Image image = new Image(post.getId(), file.getOriginalFilename());
+                Image image = new Image(post.getId(),UPLOAD_DIR+"/"+file.getOriginalFilename());
                 imgs.add(image);
                 imageService.save(image);
             }
             post.setImgs(imgs);
+            post.setDatePost(new Date(Calendar.getInstance().getTime().getTime()));
+            post.setQuantityLike(0);
+            post.setQuantityComment(0);
+            post.setView(0);
+            post.setStatus(1);
             postService.save(post);
 
         } catch (IOException e) {

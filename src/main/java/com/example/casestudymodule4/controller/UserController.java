@@ -1,20 +1,39 @@
 package com.example.casestudymodule4.controller;
 
+import com.example.casestudymodule4.model.entity.Avatar;
+import com.example.casestudymodule4.model.entity.Image;
 import com.example.casestudymodule4.model.entity.User;
+import com.example.casestudymodule4.model.entity.UserForm;
+import com.example.casestudymodule4.service.Avatar.AvatarServiceImpl;
 import com.example.casestudymodule4.service.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/api/users")
 public class UserController {
+    private static final String UPLOAD_DIR = "img";
     @Autowired
     private IUserService userService;
+    @Autowired
+    private AvatarServiceImpl avatarService;
+
+    @GetMapping
+    public ModelAndView hehe(){
+        return new ModelAndView("/test");
+    }
 
     @PutMapping("/editPassword/{id}")
     public ResponseEntity<User> updatePassword(@PathVariable Long id,@RequestBody User user){
@@ -32,4 +51,45 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
     }
 
+    @PostMapping("/edit-avatar/{id}")
+    public ResponseEntity<?> editAvatar(@ModelAttribute UserForm form,@PathVariable Long id) {
+        User  user = userService.findById(id).get();
+        String result = null;
+        try {
+            result = this.saveUploadedFiles(form.getFile());
+            Avatar avatar = new Avatar(UPLOAD_DIR+"/"+form.getFile().getOriginalFilename());
+            avatarService.save(avatar);
+            user.setImgUrl(avatar);
+            userService.save(user);
+
+            }
+
+        // Here Catch IOException only.
+        // Other Exceptions catch by RestGlobalExceptionHandler class.
+        catch (IOException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<String>("Uploaded to: <br/>" + result, HttpStatus.OK);
+
+    }
+
+    // Save Files
+    private String saveUploadedFiles(MultipartFile file) throws IOException {
+
+        // Make sure directory exists!
+        File uploadDir = new File(UPLOAD_DIR);
+        uploadDir.mkdirs();
+
+        StringBuilder sb = new StringBuilder();
+            String uploadFilePath = UPLOAD_DIR + "/" + file.getOriginalFilename();
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get(uploadFilePath);
+            Files.write(path, bytes);
+            sb.append(uploadFilePath).append("<br/>");
+        return sb.toString();
+    }
 }
+
+
