@@ -85,6 +85,10 @@ public class PostController {
         List<User> users = showListFriend(id);
         List<Post> posts ;
         List<Post> posts1 = new ArrayList<>();
+        List<Post> postUser = (List<Post>) postService.findAllByUserIdAndByStatus(id);
+        for (int i = 0; i < postUser.size(); i++) {
+            posts1.add(postUser.get(i));
+        }
         for (int i = 0; i < users.size(); i++) {
             System.out.println(users.get(i).getId());
                 posts = (List<Post>) postService.findAllByUserIdAndByStatus(users.get(i).getId());
@@ -104,12 +108,7 @@ public class PostController {
         postService.save(post.get());
         return new ResponseEntity<>(post.get(),HttpStatus.OK);
     }
-    @GetMapping("/showComment/{id}")
-    public ResponseEntity<Post> findCommentByIdPost(@PathVariable Long id){
-        Optional<Post> posts = postService.findById(id);
-//        List<Comment> comments = posts.get().getListComment();
-        return new ResponseEntity<>(posts.get(),HttpStatus.OK);
-    }
+
 
 }
 

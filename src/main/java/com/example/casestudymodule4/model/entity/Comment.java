@@ -15,12 +15,21 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private Post post;
     public Comment(Long id, String comment, Date dateComment, User user) {
         this.id = id;
         this.comment = comment;
         this.dateComment = dateComment;
         this.user = user;
+    }
+
+    public Comment(String comment, Date dateComment, User user, Post post) {
+        this.comment = comment;
+        this.dateComment = dateComment;
+        this.user = user;
+        this.post = post;
     }
 
     public Comment(String comment, Date dateComment, User user) {
@@ -31,6 +40,14 @@ public class Comment {
 
     public Comment(){
 
+    }
+
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
     }
 
     public Long getId() {

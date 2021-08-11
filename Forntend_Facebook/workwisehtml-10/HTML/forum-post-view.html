@@ -23,25 +23,47 @@
     function showCommentAndLength() {
         $.ajax({
             type: "GET",
-            url: "http://localhost:8080/api/posts/showComment/" + localStorage.getItem("idPost_comment"),
+            url: "http://localhost:8080/api/Comment/showComment/" + localStorage.getItem("idPost_comment"),
             headers: {"Authorization": 'Bearer ' + localStorage.getItem("token")},
             success: function (data) {
-
-
-
-                document.getElementById("fullNameUs").innerHTML = data.user.fullName;
-                let leng = data.listComment.length + " Comments";
+                console.log(data)
+                document.getElementById("fullNameUs").innerHTML = data[0].post.user.fullName;
+                document.getElementById("contentPost").innerHTML = data[0].post.content;
+                let leng = data.length + " Comments";
                 document.getElementById("total").innerHTML = leng;
                 let str = "";
-                for (let i = 0; i < data.listComment.length; i++) {
-                    let date1 = new Date();
-                    let date = new Date(data.listComment[i].dateComment)
-                    console.log(date)
-                    let date2;
-                    if ((date.getMinutes() < date1.getMinutes()) && (date.getHours() == date1.getHours())){
+                let date1 = new Date();
+                let datePost1;
+                let date2;
+                for (let i = 0; i < data.length; i++) {
+
+                    let datePost = new Date(data[i].post.datePost);
+
+                    console.log(datePost)
+                    if ((datePost.getSeconds() < date1.getSeconds()) && (datePost.getMinutes() == date1.getMinutes()) && (datePost.getHours() == date1.getHours()) && (datePost.getDate() == date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
+                        datePost1 = " " + (date1.getSeconds() - datePost.getSeconds()) + " giây trước"
+                    } else if ((datePost.getMinutes() < date1.getMinutes()) && (datePost.getHours() == date1.getHours()) && (datePost.getDate() == date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
+                        datePost1 = " " + (datePost.getMinutes() - datePost.getMinutes()) + " phút trước";
+                    } else if ((datePost.getHours() < date1.getHours()) && (datePost.getDate() == date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
+                        datePost1 = " " + (date1.getHours() - datePost.getHours()) + " giờ trước"
+                    } else if ((datePost.getDate() < date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
+                        datePost1 = " " + (date1.getDay() - datePost.getDay()) + " ngày trước";
+                    } else {
+                        datePost1 = " " + (date1.getFullYear() - datePost.getFullYear()) + " năm trước";
+                    }
+                    let date = new Date(data[i].dateComment)
+                    console.log(date.getSeconds())
+
+                    if ((date.getSeconds() < date1.getSeconds()) && (date.getMinutes() == date1.getMinutes()) && (date.getHours() == date1.getHours()) && (date.getDate() == date1.getDate()) && (date.getFullYear() == date1.getFullYear())) {
+                        date2 = (date1.getSeconds() - date.getSeconds()) + " giây trước"
+                    } else if ((date.getMinutes() < date1.getMinutes()) && (date.getHours() == date1.getHours()) && (date.getDate() == date1.getDate()) && (date.getFullYear() == date1.getFullYear())) {
                         date2 = (date1.getMinutes() - date.getMinutes()) + " phút trước";
-                    }else {
+                    } else if ((date.getHours() < date1.getHours()) && (date.getDate() == date1.getDate()) && (date.getFullYear() == date1.getFullYear())) {
                         date2 = (date1.getHours() - date.getHours()) + " giờ trước"
+                    } else if ((date.getDate() < date1.getDate()) && (date.getFullYear() == date1.getFullYear())) {
+                        date2 = (date1.getDay() - date.getDay()) + " ngày trước";
+                    } else {
+                        date2 = (date1.getFullYear() - date.getFullYear()) + " năm trước";
                     }
                     str += `<li>
 <div class="comment-list">
@@ -49,27 +71,25 @@
 <img src="http://via.placeholder.com/40x40" alt="">
 </div>
 <div class="comment">
-<h3>`+ data.listComment[i].user.fullName +`</h3>
-<span><img src="images/clock.png" alt="">`+ date2 +`</span>
-<p>`+ data.listComment[i].comment +`</p>
+<h3>` + data[i].user.fullName + `</h3>
+<span><img src="images/clock.png" alt="">` + date2 + `</span>
+<p>` + data[i].comment + `</p>
 </div>
 </div>
 </li>`
                 }
+                document.getElementById("datePost").innerHTML = datePost1
+
                 document.getElementById("showComment").innerHTML = str;
+
             }
         })
     }
 
-    function test() {
 
-
-        document.getElementById("contentPost").innerHTML = localStorage.getItem("content");
-
-    }
 
 </script>
-<body onload="test(),showCommentAndLength()">
+<body onload="showCommentAndLength()">
 
 
 <div class="wrapper">
@@ -115,7 +135,6 @@
                             <a href="profiles.html" title="" onclick="removeContentPost()">
                                 <script>
                                     function removeContentPost() {
-                                        window.localStorage.removeItem("content");
                                         window.localStorage.removeItem("idPost_comment");
                                     }
                                 </script>
@@ -130,7 +149,7 @@
                         <!--                            </a>-->
                         <!--                        </li>-->
                         <li>
-                            <a href="#" title="" class="not-box-open" >
+                            <a href="#" title="" class="not-box-open">
                                 <span><img src="images/icon6.png" alt=""></span>
                                 Messages
                             </a>
@@ -321,7 +340,7 @@
                                 </div>
                                 <div class="usr_quest">
                                     <h3 id="fullNameUs"></h3>
-                                    <span><i class="fa fa-clock-o"></i>3 min ago</span>
+                                    <span><i class="fa fa-clock-o" id="datePost"></i></span>
                                     <ul class="react-links">
                                         <li><a href="#" title=""><i class="fa fa-heart"></i> Vote 150</a></li>
                                         <li><a href="#" title=""><i class="fa fa-share-alt"></i> Share</a></li>

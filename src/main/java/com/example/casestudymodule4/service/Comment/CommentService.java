@@ -30,4 +30,9 @@ public class CommentService implements ICommentService{
     public void remove(Long id) {
 commentRepository.deleteById(id);
     }
+
+    @Override
+    public Iterable<Comment> findAllByPostId(Long id) {
+        return commentRepository.findAllByPostId(id);
+    }
 }
