@@ -288,7 +288,10 @@
                 }
             })
         }
-
+        function showContentFriend(idFriend){
+            localStorage.setItem("idFriend",idFriend);
+            window.location.href = "user-profile.html";
+        }
         function getAllFriend() {
 
             $.ajax({
@@ -308,12 +311,12 @@
                             success: function (data1) {
                                 console.log(data1)
 
-                                        str += `<div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                                        str += `<div class="col-lg-3 col-md-4 col-sm-6 col-12" xmlns="http://www.w3.org/1999/html">
                                 	<div class="company_profile_info">
                                 		<div class="company-up-info">
                                 			<img src="http://via.placeholder.com/91x91" alt="" >
                                 			<input type="hidden" id="id" value="` + data[i].id + `">
-                                			<h3>` + data[i].fullName + `</h3>
+                                			 <h3 >` + data[i].fullName + `</h3>
                                 			<a onclick="mutualFriends(` + data[i].id + `)" <span  id="idAddFriend">` + data1.length + `</span><span>&nbsp bạn chung </span></a>
                                 			<ul>
                                 				<li><a href="#" onclick="deleteFriend(` + data[i].id + `)" title="" class="follow">Hủy Kết Bạn</a></li>
@@ -321,7 +324,7 @@
                                 				<li><a href="#" title="" class="hire-us">Hire</a></li>
                                 			</ul>
                                 		</div>
-                                		<a href="user-profile.html" onclick="getUserById1(` + data[i].id + `)" >View Profile </a>
+                                		<a href="user-profile.html" onclick="showContentFriend(` + data[i].id + `)" >View Profile </a>
                                 	</div>
                                 </div>`
                                 document.getElementById("friend").innerHTML = str;

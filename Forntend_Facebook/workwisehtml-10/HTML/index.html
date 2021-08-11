@@ -32,7 +32,10 @@
 
         })
     }
-
+function showContentFriend(idFriend){
+        localStorage.setItem("idFriend",idFriend);
+        window.location.href = "user-profile.html";
+}
     function showUser() {
 
         $.ajax({
@@ -49,7 +52,7 @@
                                 <div class="user-profy">
 
                             <img src="http://via.placeholder.com/57x57" alt="">
-                         <h3>` + data[i].fullName + `</h3>
+                         <h3><a onclick="showContentFriend(`+ data[i].id +`)">` + data[i].fullName + `</a></h3>
                           <span>Graphic Designer</span>
                             <ul>
                    <li><a href="#" title="" onclick="addFriend(` + data[i].id + `)" class="followw">Follow</a></li>

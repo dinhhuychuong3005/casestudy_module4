@@ -33,7 +33,7 @@
     function showPostUser() {
         $.ajax({
             type: "GET",
-            url: "http://localhost:8080/api/posts/" + localStorage.getItem("id"),
+            url: "http://localhost:8080/api/posts/" + localStorage.getItem("idFriend"),
             success: function (data) {
 document.getElementById("nameUs").innerHTML = data[0].user.fullName;
 document.getElementById("names").innerHTML = data[0].user.fullName;

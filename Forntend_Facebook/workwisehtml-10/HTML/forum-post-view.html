@@ -16,7 +16,8 @@
     <link rel="stylesheet" type="text/css" href="lib/slick/slick-theme.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="stylesheet" type="text/css" href="css/responsive.css">
-    <script src="idPost.js"></script>
+    <script src="checkToken.js"></script>
+
 </head>
 
 <script>
@@ -86,11 +87,34 @@
             }
         })
     }
+    function createComment1() {
+        let postComment = document.getElementById("postComment").value;
+        console.log(postComment)
 
+        if (postComment == "") {
+        } else {
+            $.ajax({
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-type': 'application/json'
+                },
+                type: "POST",
+                data: JSON.stringify(postComment),
+                url: "http://localhost:8080/api/Comment/" + localStorage.getItem("id") + "/" + localStorage.getItem("idPost_comment") + "?comment=" + postComment,
 
+                success: function (data) {
+                    showCommentAndLength()
+                    document.getElementById("postComment").value = "";
+                }
+            })
+        }
+    }
 
+    function name() {
+        document.getElementById("nameUs").innerHTML = window.localStorage.getItem("fullName")
+    }
 </script>
-<body onload="showCommentAndLength()">
+<body onload="showCommentAndLength(),checkTonke(),name()">
 
 
 <div class="wrapper">
@@ -262,7 +286,7 @@
                              src="https://scontent.fhan5-6.fna.fbcdn.net/v/t1.6435-9/156911652_1741974435964297_901809339056874310_n.jpg?_nc_cat=107&ccb=1-4&_nc_sid=09cbfe&_nc_ohc=gP84Z9c0wl0AX8AUVzJ&_nc_oc=AQnJBtTddi70VbklvTVCJSEnes6yJm0RjUbpubyiU3oFZRi78I8qBPzfoChCSMBq3O4&tn=7gV0dNAdpcPnQ6-z&_nc_ht=scontent.fhan5-6.fna&oh=8fb5f48ef782b19bf3bc43d5407e69ac&oe=6133D687"
                              alt="">
 
-                        <a href="#" title="" id="name">ABC </a>
+                        <a href="#" title="" id="nameUs"> </a>
 
                         <!--                        <i class="la la-sort-down"></i>-->
                     </div>
@@ -397,8 +421,8 @@
                                 </div>
                                 <div class="post_comment_sec">
                                     <form>
-                                        <textarea placeholder="Your Answer"></textarea>
-                                        <button type="submit">Post Answer</button>
+                                        <textarea id="postComment" placeholder="Your Answer"></textarea>
+                                        <button type="button" onclick="createComment1()">Post Answer</button>
                                     </form>
                                 </div><!--post_comment_sec end-->
                             </div><!--user-poster end-->
