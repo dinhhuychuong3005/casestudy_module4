@@ -26,6 +26,7 @@
             url: "http://localhost:8080/api/Comment/showComment/" + localStorage.getItem("idPost_comment"),
             headers: {"Authorization": 'Bearer ' + localStorage.getItem("token")},
             success: function (data) {
+
                 console.log(data)
                 document.getElementById("fullNameUs").innerHTML = data[0].post.user.fullName;
                 document.getElementById("contentPost").innerHTML = data[0].post.content;
