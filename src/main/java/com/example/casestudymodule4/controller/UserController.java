@@ -53,15 +53,23 @@ public class UserController {
 
     @PostMapping("/edit-avatar/{id}")
     public ResponseEntity<?> editAvatar(@ModelAttribute UserForm form,@PathVariable Long id) {
-        User  user = userService.findById(id).get();
+        Optional<Avatar> avatarOptional = avatarService.findById(id);
+        Avatar avatar = new Avatar();
+        if(!avatarOptional.isPresent()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         String result = null;
         try {
             result = this.saveUploadedFiles(form.getFile());
-            Avatar avatar = new Avatar(UPLOAD_DIR+"/"+form.getFile().getOriginalFilename());
+            if(form.getFile()==null){
+                avatarOptional.get().setUrl(avatarOptional.get().getUrl());
+            } else {
+                avatar.setUrl(UPLOAD_DIR+"/"+form.getFile().getOriginalFilename());
+                avatarOptional.get().setStatus(0);
+            }
+            avatar.setUser(form.getUser());
             avatarService.save(avatar);
-            user.setImgUrl(avatar);
-            userService.save(user);
-
+            avatarService.save(avatarOptional.get());
             }
 
         // Here Catch IOException only.

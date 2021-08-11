@@ -25,27 +25,7 @@ public class Post {
     @OneToMany(mappedBy = "postId", fetch = FetchType.EAGER)
     private List<Image> imgs;
 
-    @OneToMany(targetEntity = Comment.class)
-    private List<Comment> listComment;
-
-
-
-
     public Post() {
-    }
-
-    public Post(Long id, String content, Date datePost, int status, int view, int quantityLike, int quantityComment, User user, Long likes, List<Image> imgs, List<Comment> listComment) {
-        this.id = id;
-        this.content = content;
-        this.datePost = datePost;
-        this.status = status;
-        this.view = view;
-        this.quantityLike = quantityLike;
-        this.quantityComment = quantityComment;
-        this.user = user;
-        this.likes = likes;
-        this.imgs = imgs;
-        this.listComment = listComment;
     }
 
     public Long getId() {
@@ -128,11 +108,16 @@ public class Post {
         this.imgs = imgs;
     }
 
-    public List<Comment> getListComment() {
-        return listComment;
-    }
-
-    public void setListComment(List<Comment> listComment) {
-        this.listComment = listComment;
+    public Post(Long id, String content, Date datePost, int status, int view, int quantityLike, int quantityComment, User user, Long likes, List<Image> imgs) {
+        this.id = id;
+        this.content = content;
+        this.datePost = datePost;
+        this.status = status;
+        this.view = view;
+        this.quantityLike = quantityLike;
+        this.quantityComment = quantityComment;
+        this.user = user;
+        this.likes = likes;
+        this.imgs = imgs;
     }
 }

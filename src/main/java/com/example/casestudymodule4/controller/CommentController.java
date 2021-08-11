@@ -2,8 +2,10 @@ package com.example.casestudymodule4.controller;
 
 
 import com.example.casestudymodule4.model.entity.Comment;
+import com.example.casestudymodule4.model.entity.Post;
 import com.example.casestudymodule4.model.entity.User;
 import com.example.casestudymodule4.service.Comment.ICommentService;
+import com.example.casestudymodule4.service.post.IPostService;
 import com.example.casestudymodule4.service.user.IUserService;
 import com.fasterxml.jackson.databind.node.TextNode;
 import org.springframework.beans.factory.ObjectProvider;
@@ -24,20 +26,23 @@ public class CommentController {
     private ICommentService commentService;
     @Autowired
     private IUserService userService;
+    @Autowired
+    private IPostService postService;
 
-    @PostMapping("/{id}")
-    public ResponseEntity<Comment> createComment(@PathVariable Long id,@RequestBody String comment) {
-        User user= userService.findById(id).get();
+    @PostMapping("/{idUs}/{idPost}")
+    public ResponseEntity<Comment> createComment(@PathVariable Long idUs,@PathVariable Long idPost,@RequestParam String comment) {
+        User user= userService.findById(idUs).get();
+        Post  post = postService.findById(idPost).get();
         long millis = System.currentTimeMillis();
         java.sql.Date dateComment = new java.sql.Date(millis);
 
-        Comment comment1 = new Comment(comment,dateComment,user);
+        Comment comment1 = new Comment(comment,dateComment,user,post);
         return new ResponseEntity<>(commentService.save(comment1), HttpStatus.CREATED);
     }
 
-    @GetMapping()
-    public ResponseEntity<Iterable<Comment>> showListComment() {
-        return new ResponseEntity<>(commentService.findAll(), HttpStatus.OK);
+    @GetMapping("/showComment/{idPost}")
+    public ResponseEntity<Iterable<Comment>> showListComment(@PathVariable Long idPost) {
+        return new ResponseEntity<>(commentService.findAllByPostId(idPost), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

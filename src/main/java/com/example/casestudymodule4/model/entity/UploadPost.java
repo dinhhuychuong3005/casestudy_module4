@@ -5,6 +5,15 @@ import org.springframework.web.multipart.MultipartFile;
 public class UploadPost {
     private MultipartFile [] files;
     private String content;
+    private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public UploadPost() {
     }

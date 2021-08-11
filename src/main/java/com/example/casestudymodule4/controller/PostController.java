@@ -1,6 +1,9 @@
 package com.example.casestudymodule4.controller;
-
 import com.example.casestudymodule4.model.entity.*;
+import com.example.casestudymodule4.model.entity.Comment;
+import com.example.casestudymodule4.model.entity.Friend;
+import com.example.casestudymodule4.model.entity.Post;
+import com.example.casestudymodule4.model.entity.User;
 import com.example.casestudymodule4.service.friend.IFriendService;
 import com.example.casestudymodule4.service.image.ImageServiceImpl;
 import com.example.casestudymodule4.service.post.IPostService;
@@ -81,6 +84,7 @@ public class PostController {
             post.setQuantityComment(0);
             post.setView(0);
             post.setStatus(1);
+            post.setUser(form.getUser());
             postService.save(post);
 
         } catch (IOException e) {
@@ -175,6 +179,10 @@ public class PostController {
         List<User> users = showListFriend(id);
         List<Post> posts ;
         List<Post> posts1 = new ArrayList<>();
+        List<Post> postUser = (List<Post>) postService.findAllByUserIdAndByStatus(id);
+        for (int i = 0; i < postUser.size(); i++) {
+            posts1.add(postUser.get(i));
+        }
         for (int i = 0; i < users.size(); i++) {
             System.out.println(users.get(i).getId());
                 posts = (List<Post>) postService.findAllByUserIdAndByStatus(users.get(i).getId());
@@ -194,5 +202,7 @@ public class PostController {
         postService.save(post.get());
         return new ResponseEntity<>(post.get(),HttpStatus.OK);
     }
+
+
 }
 

@@ -40,10 +40,6 @@ public class User {
 
     @Column(nullable = false)
     private String gender;
-    @OneToOne
-    @JoinColumn(name = "avatar_id")
-    private Avatar imgUrl = a;
-
 
 
     private Date dateOfBirth;
@@ -118,13 +114,6 @@ public class User {
         this.gender = gender;
     }
 
-    public Avatar getImgUrl() {
-        return imgUrl;
-    }
-
-    public void setImgUrl(Avatar imgUrl) {
-        this.imgUrl = imgUrl;
-    }
 
     public Date getDateOfBirth() {
         return dateOfBirth;
@@ -153,7 +142,7 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String username, String password, String fullName, String address, String email, String numberPhone, String gender, Avatar imgUrl, Date dateOfBirth, Set<Role> roles, boolean enabled) {
+    public User(Long id, String username, String password, String fullName, String address, String email, String numberPhone, String gender, Date dateOfBirth, Set<Role> roles, boolean enabled) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -162,11 +151,12 @@ public class User {
         this.email = email;
         this.numberPhone = numberPhone;
         this.gender = gender;
-        this.imgUrl = imgUrl;
+
         this.dateOfBirth = dateOfBirth;
         this.roles = roles;
         this.enabled = enabled;
     }
+
 
 
 }
