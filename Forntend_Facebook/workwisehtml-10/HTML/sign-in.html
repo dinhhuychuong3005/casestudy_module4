@@ -47,20 +47,19 @@
         //     })
         // }
 
-        $(document).ready(function()
-        {
+        $(document).ready(function () {
             let submit = $("button[type='submit']");
 
             // bắt sự kiện click vào nút Login
-            submit.click(function()
-            {let username = $("#username").val();
-                    let password = $("#password").val();
-                    console.log(username)
-                    console.log(password)
-                    let user = {
-                        "username": username,
-                        "password": password
-                    }
+            submit.click(function () {
+                let username = $("#username").val();
+                let password = $("#password").val();
+                console.log(username)
+                console.log(password)
+                let user = {
+                    "username": username,
+                    "password": password
+                }
 
                 // Kiểm tra đã nhập tên tài khoản chưa
                 if (username == '') {
@@ -79,31 +78,29 @@
                 // Sử dụng $.ajax()
                 $.ajax({
                     headers: {
-                                    'Accept': 'application/json',
-                                    'Content-type': 'application/json'
-                                },
+                        'Accept': 'application/json',
+                        'Content-type': 'application/json'
+                    },
                     type: "POST",
-                            url: "http://localhost:8080/api/login",
-                            data: JSON.stringify(user),
-                    success :  function(data)
-                    {
+                    url: "http://localhost:8080/api/login",
+                    data: JSON.stringify(user),
+                    success: function (data) {
                         console.log("a")
-                        if (data == 'false')
-                        {
+                        if (data == 'false') {
                             alert('Sai tên đăng nhập hoặc mật khẩu');
                         } else {
                             window.location.href = 'index.html';
-                                        localStorage.setItem('token', data.accessToken)
-                                        localStorage.setItem("id", data.id)
-                            localStorage.setItem("password",password);
+                            localStorage.setItem('token', data.accessToken)
+                            localStorage.setItem("id", data.id)
+                            localStorage.setItem("password", password);
 
-                                        console.log(data.id)
-                                        console.log(data.roles[0].authority)
+                            console.log(data.id)
+                            console.log(data.roles[0].authority)
 
-                                        // console.log(data);
-                                        // console.log(data.accessToken)
-                                        // localStorage.setItem('token', data.accessToken)
-                                        // showList(data.accessToken)
+                            // console.log(data);
+                            // console.log(data.accessToken)
+                            // localStorage.setItem('token', data.accessToken)
+                            // showList(data.accessToken)
                         }
                     }
                 });
@@ -129,8 +126,7 @@
                         <div class="cmp-info">
                             <div class="cm-logo">
                                 <img src="images/cm-logo.png" alt="">
-                                <p>Workwise, is a global freelancing platform and social networking where businesses and
-                                    independent professionals connect and collaborate remotely</p>
+                                <p>Mạng xã hội được phát triển bởi team 4</p>
                             </div><!--cm-logo end-->
                             <img src="images/cm-main-img.png" alt="">
                         </div><!--cmp-info end-->
@@ -171,7 +167,7 @@
                                             </div>
                                         </div>
                                         <div class="col-lg-12 no-pdd">
-                                            <button type="submit" >Sign in</button>
+                                            <button type="submit">Sign in</button>
                                         </div>
                                     </div>
                                 </form>
