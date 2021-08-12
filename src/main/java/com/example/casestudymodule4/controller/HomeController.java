@@ -2,7 +2,9 @@ package com.example.casestudymodule4.controller;
 
 
 import com.example.casestudymodule4.model.JwtResponse;
+import com.example.casestudymodule4.model.entity.ImageUser;
 import com.example.casestudymodule4.model.entity.User;
+import com.example.casestudymodule4.service.imageUse.IImageUseService;
 import com.example.casestudymodule4.service.jwt.JwtService;
 import com.example.casestudymodule4.service.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,8 @@ public class HomeController {
 
     @Autowired
     private IUserService userService;
+    @Autowired
+    private IImageUseService iImageUseService;
 //    @Autowired
 //    JavaMailSender javaMailSender;
 
@@ -72,6 +76,8 @@ public class HomeController {
         } else if (userOptional1.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
+            Optional<ImageUser> imageUser = iImageUseService.findById(1L);
+            user.setImgUrl((List<ImageUser>) imageUser.get());
             userService.save(user);
             return new ResponseEntity<>(userService.findById(user.getId()).get(), HttpStatus.OK);
         }

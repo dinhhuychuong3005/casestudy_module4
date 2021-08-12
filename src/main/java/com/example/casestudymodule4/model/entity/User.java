@@ -7,6 +7,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -40,8 +41,8 @@ public class User {
 
     @Column(nullable = false)
     private String gender;
-    @ManyToOne
-    private ImageUser imgUrl;
+    @OneToMany(mappedBy = "userId")
+    private List<ImageUser> imgUrl;
 
     private Date dateOfBirth;
     @ManyToMany(fetch = FetchType.EAGER)
@@ -53,7 +54,7 @@ public class User {
     public User() {
     }
 
-    public User(String username, String password, String fullName, String address, String email, String numberPhone, String gender, ImageUser imgUrl, Date dateOfBirth, Set<Role> roles) {
+    public User(String username, String password, String fullName, String address, String email, String numberPhone, String gender, List<ImageUser> imgUrl, Date dateOfBirth, Set<Role> roles) {
         this.username = username;
         this.password = password;
         this.fullName = fullName;
@@ -72,14 +73,6 @@ public class User {
         this.fullName = fullName;
     }
 
-    public ImageUser getImgUrl() {
-        return imgUrl;
-    }
-
-    public void setImgUrl(ImageUser imgUrl) {
-        this.imgUrl = imgUrl;
-    }
-
     public Long getId() {
         return id;
     }
@@ -88,43 +81,20 @@ public class User {
         this.id = id;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setNumberPhone(String numberPhone) {
-        this.numberPhone = numberPhone;
-    }
-
-
-
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
     public String getUsername() {
         return username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getPassword() {
         return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getFullName() {
@@ -139,8 +109,24 @@ public class User {
         return address;
     }
 
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public String getEmail() {
         return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getNumberPhone() {
+        return numberPhone;
+    }
+
+    public void setNumberPhone(String numberPhone) {
+        this.numberPhone = numberPhone;
     }
 
     public String getGender() {
@@ -151,18 +137,28 @@ public class User {
         this.gender = gender;
     }
 
-    public String getNumberPhone() {
-        return numberPhone;
+    public List<ImageUser> getImgUrl() {
+        return imgUrl;
     }
 
-
+    public void setImgUrl(List<ImageUser> imgUrl) {
+        this.imgUrl = imgUrl;
+    }
 
     public Date getDateOfBirth() {
         return dateOfBirth;
     }
 
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
     public Set<Role> getRoles() {
         return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }
 

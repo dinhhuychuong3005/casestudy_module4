@@ -52,6 +52,11 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public Iterable<User> findAllByFullNameContaining(String fullName) {
+        return userRepository.findAllByFullNameContaining(fullName);
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> userOptional = userRepository.findByUsername(username);
         if (!userOptional.isPresent()){

@@ -8,6 +8,7 @@ function setItem() {
     window.localStorage.removeItem("id")
     window.localStorage.removeItem("user")
     window.localStorage.removeItem("password")
+    window.localStorage.removeItem("nameSearch")
 }
 
 function checkTonke() {

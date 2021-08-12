@@ -31,4 +31,9 @@ public class ImageUseService implements IImageUseService {
     public void remove(Long id) {
         iImageUserRepository.deleteById(id);
     }
+
+    @Override
+    public ImageUser findByUserIdAndStatus(Long idU) {
+        return iImageUserRepository.findByUserIdAndStatus(idU);
+    }
 }

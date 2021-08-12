@@ -1,9 +1,6 @@
 package com.example.casestudymodule4.model.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class ImageUser {
@@ -14,13 +11,24 @@ public class ImageUser {
     private int status;
 
     private String urlImg;
+    @ManyToOne
+    private User userId;
 
     public ImageUser() {
     }
 
-    public ImageUser(int status, String urlImg) {
+    public ImageUser(int status, String urlImg,User userId) {
         this.status = status;
         this.urlImg = urlImg;
+        this.userId = userId;
+    }
+
+    public User getUserId() {
+        return userId;
+    }
+
+    public void setUserId(User userId) {
+        this.userId = userId;
     }
 
     public Long getId() {
