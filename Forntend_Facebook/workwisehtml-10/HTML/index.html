@@ -443,6 +443,15 @@
                                                     console.log(data1.length)
                                                 }
                                             })
+                                            $.ajax({
+                                                type: "GET",
+                                                url: "http://localhost:8080/api/like/" + data[0].id,
+                                                headers: {"Authorization": 'Bearer ' + localStorage.getItem("token")},
+                                                success: function (data2) {
+                                                    document.getElementById("totalLike").innerHTML = data2.length ;
+                                                    console.log(data2.length)
+                                                }
+                                            })
                                             let date1 = new Date();
                                             let datePost = new Date(data[0].datePost)
                                             let datePost1;
@@ -497,9 +506,9 @@
                                         <div class="job-status-bar">
                                             <ul class="like-com">
                                                 <li>
-                                                    <a href="#"><i class="la la-heart"></i> Like</a>
+                                                    <a  onclick="checkLike(`+ data[0].id +`)"><i class="la la-heart"></i> Like</a>
                                                     <img src="images/liked-img.png" alt="">
-                                                    <span>25</span>
+                                                    <span id="totalLike"></span>
                                                 </li>
                                                 <li><a   onclick="checkView(` + data[0].id + `),showCommentByPost(` + data[0].id + `)" title="" class="com" id="totalComment">
                                                     </a></li>
@@ -514,7 +523,7 @@
                                                 <div class="comment_box">
 
                                             <input type="text" id="postComment" placeholder="Post a comment">
-                                            <button type="button" onclick="createComment1(`+ data[0].id +`)">Send</button>
+                                            <button type="button" onclick="createComment1(`+ data[0].id +`,document.getElementById('postComment').value)">Send</button>
 
                                             </div>
                                             </div>
@@ -532,7 +541,7 @@
                                         success: function (data) {
                                             let str = "";
                                             for (let i = 1; i < data.length; i++) {
-
+console.log(data[i].imgs[0].linkImage)
                                                 $.ajax({
                                                     type: "GET",
                                                     url: "http://localhost:8080/api/Comment/showComment/" + data[i].id,
@@ -541,8 +550,7 @@
                                                         console.log(data1)
                                                         // document.getElementById("totalComment1").innerHTML = data1.length + " comment" + ;
                                                         console.log(data1.length)
-                                                    }
-                                                })
+
                                                 let date1 = new Date();
                                                 let datePost = new Date(data[i].datePost)
                                                 let datePost1;
@@ -591,8 +599,9 @@
                                         </div>
                                         <div class="job_descp" id="postFriend">
                                             <p> ` + data[i].content + ` </p>
-                                                <div id="imgPost">
-                                                </div>
+                                                 <div id="imgPost1">
+ <img src="`+ data[i].imgs[0].linkImage +`" style="width: 450px" height="300px">
+                                                  </div>
                                                 </div>
                                                 <div class="job-status-bar">
                                                 <ul class="like-com">
@@ -601,7 +610,7 @@
                                                 <img src="images/liked-img.png" alt="">
                                                 <span>25</span>
                                                 </li>
-                                                <li><a   onclick="checkView(` + data[i].id + `),showCommentByPost(` + data[i].id + `)" title="" class="com" ><img src="images/com.png" alt="">
+                                                <li><a   onclick="checkView(` + data[i].id + `),showCommentByPost(` + data[i].id + `)" title="" class="com" >`+ data1.length +`<img src="images/com.png" alt="">
                                                 </a></li>
                                                 </ul>
                                                 <a ><i class="la la-eye"></i>Views ${data[i].view}</a>
@@ -612,18 +621,27 @@
                                                 <img src="http://via.placeholder.com/40x40" alt="">
                                                 </div>
                                                 <div class="comment_box">
-                                                <input type="text" id="postComment1" placeholder="Post a comment">
-                                                <button type="button" onclick="createComment2(` + data[i].id + `)">Send</button>
+                                                <input type="text" id="`+ i +`" placeholder="Post a comment">
+                                                <button type="button" onclick="createComment1(` + data[i].id + `,document.getElementById('`+ i +`').value)">Send</button>
                                                 </div>
                                                 </div>
                                                 </div>
 </div>
                                                 `;
+
+                                                        document.getElementById("post2").innerHTML = str;
+                                                    }
+                                                })
                                             }
-                                            document.getElementById("post2").innerHTML = str;
+
                                         }
                                     })
                                 }
+                                function test(){
+                                    let a = document.getElementById('postComment1' + "2").value
+                                    console.log(a)
+                                }
+
                                 function createComment2(idPost) {
                                     let postComment = document.getElementById("postComment1").value;
                                     console.log(postComment)
@@ -646,11 +664,11 @@
                                     }
                                 }
 
-                                function createComment1(idPost) {
-                                    let postComment = document.getElementById("postComment").value;
-                                    console.log(postComment)
+                                function createComment1(idPost,comment) {
 
-                                    if (postComment == "") {
+                                    console.log(comment)
+
+                                    if (comment == "") {
                                     } else {
                                         $.ajax({
                                             headers: {
@@ -659,10 +677,11 @@
                                             },
                                             type: "POST",
                                             data: JSON.stringify(postComment),
-                                            url: "http://localhost:8080/api/Comment/" + localStorage.getItem("id") + "/" + idPost + "?comment=" + postComment,
+                                            url: "http://localhost:8080/api/Comment/" + localStorage.getItem("id") + "/" + idPost + "?comment=" + comment,
 
                                             success: function (data) {
                                                 getListPost()
+                                                getListPost2()
                                             }
                                         })
                                     }
@@ -673,6 +692,13 @@
                                     $.ajax({
                                         type: "GET",
                                         url: "http://localhost:8080/api/posts/views/" + id,
+                                        success: getListPost
+                                    })
+                                }
+                                function checkLike(id){
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "http://localhost:8080/api/like/create/" + id + "/" + localStorage.getItem("id"),
                                         success: getListPost
                                     })
                                 }
@@ -764,56 +790,56 @@
                                     </div>
                                 </div><!--top-profiles end-->
                                 <div class="post-bar" id="post2">
-                                    <div class="post_topbar">
-                                        <div class="usy-dt">
-                                            <img src="http://via.placeholder.com/50x50" alt="">
-                                            <div class="usy-name">
-                                                <h3>John Doe</h3>
-                                                <span><img src="images/clock.png" alt="">3 min ago</span>
-                                            </div>
-                                        </div>
-                                        <div class="ed-opts">
-                                            <a href="#" title="" class="ed-opts-open"><i
-                                                    class="la la-ellipsis-v"></i></a>
-                                            <ul class="ed-options">
-                                                <li><a href="#" title="">Edit Post</a></li>
-                                                <li><a href="#" title="">Unsaved</a></li>
-                                                <li><a href="#" title="">Unbid</a></li>
-                                                <li><a href="#" title="">Close</a></li>
-                                                <li><a href="#" title="">Hide</a></li>
-                                            </ul>
-                                        </div>
+<!--                                    <div class="post_topbar">-->
+<!--                                        <div class="usy-dt">-->
+<!--                                            <img src="http://via.placeholder.com/50x50" alt="">-->
+<!--                                            <div class="usy-name">-->
+<!--                                                <h3>John Doe</h3>-->
+<!--                                                <span><img src="images/clock.png" alt="">3 min ago</span>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="ed-opts">-->
+<!--                                            <a href="#" title="" class="ed-opts-open"><i-->
+<!--                                                    class="la la-ellipsis-v"></i></a>-->
+<!--                                            <ul class="ed-options">-->
+<!--                                                <li><a href="#" title="">Edit Post</a></li>-->
+<!--                                                <li><a href="#" title="">Unsaved</a></li>-->
+<!--                                                <li><a href="#" title="">Unbid</a></li>-->
+<!--                                                <li><a href="#" title="">Close</a></li>-->
+<!--                                                <li><a href="#" title="">Hide</a></li>-->
+<!--                                            </ul>-->
+<!--                                        </div>-->
                                     </div>
-                                    <div class="epi-sec">
-                                        <ul class="descp">
-                                            <li><img src="images/icon8.png" alt=""><span>Epic Coder</span></li>
-                                            <li><img src="images/icon9.png" alt=""><span>India</span></li>
-                                        </ul>
-                                        <ul class="bk-links">
-                                            <li><a href="#" title=""><i class="la la-bookmark"></i></a></li>
-                                            <li><a href="#" title=""><i class="la la-envelope"></i></a></li>
-                                            <li><a href="#" title="" class="bid_now">Bid Now</a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="job_descp">
-                                        <h3>Senior Wordpress Developer</h3>
-                                        <ul class="job-dt">
-                                            <li><a href="#" title="">Full Time</a></li>
-                                            <li><span>$30 / hr</span></li>
-                                        </ul>
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam luctus
-                                            hendrerit metus, ut ullamcorper quam finibus at. Etiam id magna sit
-                                            amet... <a href="#" title="">view more</a></p>
-                                        <ul class="skill-tags">
-                                            <li><a href="#" title="">HTML</a></li>
-                                            <li><a href="#" title="">PHP</a></li>
-                                            <li><a href="#" title="">CSS</a></li>
-                                            <li><a href="#" title="">Javascript</a></li>
-                                            <li><a href="#" title="">Wordpress</a></li>
-                                        </ul>
-                                    </div>
+<!--                                    <div class="epi-sec">-->
+<!--                                        <ul class="descp">-->
+<!--                                            <li><img src="images/icon8.png" alt=""><span>Epic Coder</span></li>-->
+<!--                                            <li><img src="images/icon9.png" alt=""><span>India</span></li>-->
+<!--                                        </ul>-->
+<!--                                        <ul class="bk-links">-->
+<!--                                            <li><a href="#" title=""><i class="la la-bookmark"></i></a></li>-->
+<!--                                            <li><a href="#" title=""><i class="la la-envelope"></i></a></li>-->
+<!--                                            <li><a href="#" title="" class="bid_now">Bid Now</a></li>-->
+<!--                                        </ul>-->
+<!--                                    </div>-->
+<!--                                    <div class="job_descp">-->
+<!--                                        <h3>Senior Wordpress Developer</h3>-->
+<!--                                        <ul class="job-dt">-->
+<!--                                            <li><a href="#" title="">Full Time</a></li>-->
+<!--                                            <li><span>$30 / hr</span></li>-->
+<!--                                        </ul>-->
+<!--                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam luctus-->
+<!--                                            hendrerit metus, ut ullamcorper quam finibus at. Etiam id magna sit-->
+<!--                                            amet... <a href="#" title="">view more</a></p>-->
+<!--                                        <ul class="skill-tags">-->
+<!--                                            <li><a href="#" title="">HTML</a></li>-->
+<!--                                            <li><a href="#" title="">PHP</a></li>-->
+<!--                                            <li><a href="#" title="">CSS</a></li>-->
+<!--                                            <li><a href="#" title="">Javascript</a></li>-->
+<!--                                            <li><a href="#" title="">Wordpress</a></li>-->
+<!--                                        </ul>-->
+<!--                                    </div>-->
 
-                                </div><!--post-bar end-->
+                                <!--post-bar end-->
                                 <!--                                    <div class="posty">-->
                                 <!--                                        <div class="post-bar no-margin">-->
                                 <!--                                            <div class="post_topbar">-->
@@ -1204,7 +1230,7 @@ console.log(form)
         $.ajax({
             type: "POST",
             enctype: 'multipart/form-data',
-            url: "http://localhost:8080/api/posts/create",
+            url: "http://localhost:8080/api/posts/create/" + localStorage.getItem("id"),
             data: data,
 
             // prevent jQuery from automatically transforming the data into a query string
@@ -1214,7 +1240,7 @@ console.log(form)
             timeout: 1000000,
             success: function(data, textStatus, jqXHR) {
 
-                $("#result").html(data);
+
                 console.log("SUCCESS : ", data);
                 $("#submitButton").prop("disabled", false);
                 $('#fileUploadForm')[0].reset();
@@ -1224,7 +1250,8 @@ console.log(form)
                 $("#result").html(jqXHR.responseText);
                 console.log("ERROR : ", jqXHR.responseText);
                 $("#submitButton").prop("disabled", false);
-
+getListPost();
+getListPost2()
             }
         });
 
@@ -1239,7 +1266,7 @@ console.log(form)
 
                     <div class="col-lg-12">
                         <div class="inp-field">
-                            <select id="status">
+                            <select name="status" id="status">
                                 <option value="1">Public</option>
                                 <option value="2">Private</option>
                             </select>
@@ -1250,13 +1277,11 @@ console.log(form)
                     </div>
                                             <div class="col-lg-6">
                                                 <div class="price-br">
-                                                    <input id="imgPost" type="file" >
-                                                    <button type="submit" onclick="ajaxSubmitForm()" value="submit"  id="submitButton">A</button>
+                                                    <input name="files" id="imgPost" type="file" >
+
                                                 </div>
                                             </div>
-                    <div class="col-lg-12" style="border:1px solid #ccc;padding: 5px;">
-                        <span id="result"></span>
-                    </div>
+
                     <!--                        <div class="col-lg-6">-->
                     <!--                            <div class="inp-field">-->
                     <!--                                <select>-->
@@ -1266,16 +1291,17 @@ console.log(form)
                     <!--                            </div>-->
                     <!--                        </div>-->
                     <div class="col-lg-12">
-                        <textarea name="description" placeholder="Description"></textarea>
+                        <textarea name="content" placeholder="Description"></textarea>
+                        <span id="result"></span>
                     </div>
-<!--                    <div class="col-lg-12">-->
-<!--                        <ul>-->
-<!--                            <li>-->
-<!--                                <button class="active" type="submit" value="post">Post</button>-->
-<!--                            </li>-->
-<!--                            <li><a href="#" title="">Cancel</a></li>-->
-<!--                        </ul>-->
-<!--                    </div>-->
+                    <div class="col-lg-12">
+                        <ul>
+                            <li>
+                                <button class="active" type="submit" onclick="ajaxSubmitForm()" value="submit" id="submitButton">Post</button>
+                            </li>
+                            <li><a href="#" title="">Cancel</a></li>
+                        </ul>
+                    </div>
                 </div>
             </form>
         </div><!--post-project-fields end-->

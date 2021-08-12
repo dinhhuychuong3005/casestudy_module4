@@ -122,7 +122,7 @@ public class PostController {
         return new ResponseEntity<>(post.get(), HttpStatus.OK);
     }
 
-    private static String UPLOAD_DIR = "D:\\module4\\casestudy-module4\\Forntend_Facebook\\workwisehtml-10\\HTML\\img\\";
+    private static String UPLOAD_DIR = "img";
 
 
 //    @GetMapping("/test")
@@ -131,10 +131,10 @@ public class PostController {
 //    }
 
     //maps html form to a Model
-    @PostMapping("/create")
-    public ResponseEntity<?> multiUploadFileModel(@RequestBody UploadPost form) {
+    @PostMapping("/create/{id}")
+    public ResponseEntity<?> multiUploadFileModel(@PathVariable Long id, UploadPost form) {
         Post post = new Post();
-        postService.save(post);
+postService.save(post);
         logger.debug("Multiple file upload! With UploadModel");
         String result = null;
         try {
@@ -149,7 +149,7 @@ public class PostController {
                 if (file.isEmpty()) {
                     continue;
                 }
-                Image image = new Image(post.getId(), UPLOAD_DIR + "/" + file.getOriginalFilename());
+                Image image = new Image(post.getId(), UPLOAD_DIR + "/" + file.getOriginalFilename(),userService.findById(id).get());
                 imgs.add(image);
                 imageService.save(image);
             }
@@ -157,8 +157,8 @@ public class PostController {
             post.setDatePost(new Date(Calendar.getInstance().getTime().getTime()));
 
             post.setView(0);
-            post.setStatus(1);
-            post.setUser(form.getUser());
+            post.setStatus(form.getStatus());
+            post.setUser(userService.findById(id).get());
             postService.save(post);
 
         } catch (IOException e) {

@@ -17,7 +17,7 @@ public class Post {
     @JoinColumn(name = "userId")
     private User user;
 
-    private Long likes;
+
     @OneToMany(mappedBy = "postId", fetch = FetchType.EAGER)
     private List<Image> imgs;
 
@@ -26,15 +26,14 @@ public class Post {
     public Post() {
     }
 
-    public Post(String content, Date datePost, int status, int view, User user, Long likes, List<Image> imgs) {
+    public Post(String content, Date datePost, int status, int view, User user, List<Image> imgs) {
         this.content = content;
         this.datePost = datePost;
         this.status = status;
         this.view = view;
         this.user = user;
-        this.likes = likes;
-        this.imgs = imgs;
 
+        this.imgs = imgs;
     }
 
     public int getStatus() {
@@ -86,13 +85,6 @@ public class Post {
         this.user = user;
     }
 
-    public Long getLikes() {
-        return likes;
-    }
-
-    public void setLikes(Long likes) {
-        this.likes = likes;
-    }
 
     public List<Image> getImgs() {
         return imgs;

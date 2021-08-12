@@ -19,14 +19,13 @@ public class LikePost {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private boolean disLike;
 
-    public LikePost(Long id, Date createAt, Post postId, User user, boolean disLike) {
-        this.id = id;
+    public LikePost( Date createAt, Post postId, User user) {
+
         this.createAt = createAt;
         this.postId = postId;
         this.user = user;
-        this.disLike = disLike;
+
     }
 
     public LikePost() {
@@ -64,11 +63,4 @@ public class LikePost {
         this.user = user;
     }
 
-    public boolean isDisLike() {
-        return disLike;
-    }
-
-    public void setDisLike(boolean disLike) {
-        this.disLike = disLike;
-    }
 }

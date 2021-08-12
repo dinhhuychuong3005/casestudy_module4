@@ -6,14 +6,14 @@ import org.springframework.web.multipart.MultipartFile;
 public class UploadPost {
     private MultipartFile[] files;
     private String content;
-    private User user;
+   private int status;
 
-    public User getUser() {
-        return user;
+    public int getStatus() {
+        return status;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public UploadPost() {
