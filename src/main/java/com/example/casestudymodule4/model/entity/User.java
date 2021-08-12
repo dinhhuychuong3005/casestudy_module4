@@ -41,7 +41,7 @@ public class User {
 
     @Column(nullable = false)
     private String gender;
-    @OneToMany(mappedBy = "userId")
+    @OneToMany()
     private List<ImageUser> imgUrl;
 
     private Date dateOfBirth;

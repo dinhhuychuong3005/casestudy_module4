@@ -19,11 +19,11 @@
     <script src="checkToken.js"></script>
 </head>
 <script>
-    function showCommentByPost1(idPost,status) {
+    function showCommentByPost1(idPost, status) {
         console.log(status)
-        if (status == 2){
+        if (status == 2) {
             alert("không có bình luận nào")
-        }else {
+        } else {
             window.location.href = "forum-post-view.html";
             localStorage.setItem("idPost_comment", idPost)
             console.log(idPost)
@@ -33,10 +33,10 @@
     function showPostUser() {
         $.ajax({
             type: "GET",
-            url: "http://localhost:8080/api/posts/" + localStorage.getItem("idFriend"),
+            url: "http://localhost:8080/api/posts/" + localStorage.getItem("id"),
             success: function (data) {
-document.getElementById("nameUs").innerHTML = data[0].user.fullName;
-document.getElementById("names").innerHTML = data[0].user.fullName;
+                document.getElementById("nameUs").innerHTML = data[0].user.fullName;
+                document.getElementById("names").innerHTML = data[0].user.fullName;
                 let str = "";
                 let date1 = new Date();
                 let datePost1;
@@ -89,7 +89,7 @@ document.getElementById("names").innerHTML = data[0].user.fullName;
                                                                                                 <img src="images/liked-img.png" alt="">
                                                                                                 <span>25</span>
                                                                                             </li>
-                                                                                            <li><a onclick="showCommentByPost1(` + data[i].id + `,`+ data[i].status +`)" title="" class="com"><img src="images/com.png"
+                                                                                            <li><a onclick="showCommentByPost1(` + data[i].id + `,` + data[i].status + `)" title="" class="com"><img src="images/com.png"
                                                                                                                                       alt=""> Comment 15</a>
                                                                                             </li>
                                                                                         </ul>
@@ -104,7 +104,7 @@ document.getElementById("names").innerHTML = data[0].user.fullName;
     }
 </script>
 
-<body onload="checkTonke(),showPostUser()">
+<body onload="checkTonke(),showPostUser(),showAvata()">
 
 
 <div class="wrapper">
@@ -322,13 +322,64 @@ document.getElementById("names").innerHTML = data[0].user.fullName;
 
     </script>
     <section class="cover-sec">
-        <img src="https://wall.vn/wp-content/uploads/2020/03/hinh-nen-dep-may-tinh-1.jpg" width="1600" height="400"
-             alt="">
+        <div id="upImg">
+            <img src="https://wall.vn/wp-content/uploads/2020/03/hinh-nen-dep-may-tinh-1.jpg" width="1600" height="400"
+                 alt="">
+        </div>
         <a><label for="files" class="fa fa-camera"></label> Change Image</a>
         <input type="file" id="files" style="display:none">
         <!--			<a  >Select file</a>-->
     </section>
+    <script>
+        function ajaxSubmitForm() {
+            console.log("a")
+            // Get form
+            let form = $('#fileUploadForm')[0];
+            console.log(form)
+            let data = new FormData(form);
+            console.log(data)
 
+            $("#submitButton").prop("disabled", true);
+
+            $.ajax({
+                type: "PUT",
+                enctype: 'multipart/form-data',
+                url: "http://localhost:8080/api/users/updateImg/" + localStorage.getItem("id"),
+                data: data,
+
+                // prevent jQuery from automatically transforming the data into a query string
+                processData: false,
+                contentType: false,
+                cache: false,
+                timeout: 1000000,
+                success: function (data, textStatus, jqXHR) {
+
+
+                    console.log("SUCCESS : ", data);
+                    $("#submitButton").prop("disabled", false);
+                    $('#fileUploadForm')[0].reset();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+
+                    $("#result").html(jqXHR.responseText);
+                    console.log("ERROR : ", jqXHR.responseText);
+                    $("#submitButton").prop("disabled", false);
+
+                }
+            });
+
+        }
+
+        function showAvata() {
+            $.ajax({
+                type: "GET",
+                url: "http://localhost:8080/api/avatar/" + localStorage.getItem("id"),
+                success: function (data) {
+                    document.getElementById("upAvt").innerHTML = `<img src="${data.urlImg}" alt="">`
+                }
+            })
+        }
+    </script>
     <main>
         <div class="main-section">
             <div class="container">
@@ -337,11 +388,22 @@ document.getElementById("names").innerHTML = data[0].user.fullName;
                         <div class="col-lg-3">
                             <div class="main-left-sidebar">
                                 <div class="user_profile">
-                                    <div class="user-pro-img">
-                                        <img src="http://via.placeholder.com/170x170" alt="">
-                                        <a> <label class="fa fa-camera" for="file"></label> </a>
-                                        <input type="file" id="file" style="display: none" class="hidden"/>
-                                    </div><!--user-pro-img end-->
+                                    <form method="POST" enctype="multipart/form-data" id="fileUploadForm">
+                                        <div class="user-pro-img">
+
+                                            <div id="upAvt">
+
+                                            </div>
+
+                                            <a> <label class="fa fa-camera" for="file"></label> </a>
+                                            <input type="file" id="file" style="display: none" class="hidden"/>
+                                            <button class="active" type="submit" onclick="ajaxSubmitForm()"
+                                                    value="submit"
+                                                    id="submitButton">Post
+                                            </button>
+                                        </div><!--user-pro-img end-->
+
+                                    </form>
                                     <div class="user_pro_status">
                                         <ul class="flw-hr">
                                             <li><a href="#" title="" class="flww"><i class="la la-plus"></i> Follow</a>
@@ -361,7 +423,8 @@ document.getElementById("names").innerHTML = data[0].user.fullName;
                                     </div><!--user_pro_status end-->
                                     <ul class="social_links">
                                         <li><a href="#" title=""><i class="la la-globe"></i> www.example.com</a></li>
-                                        <li><a onclick="window.location = 'https://www.facebook.com/taolon.ladydj/'" title=""><i class="fa fa-facebook-square"></i>
+                                        <li><a onclick="window.location = 'https://www.facebook.com/taolon.ladydj/'"
+                                               title=""><i class="fa fa-facebook-square"></i>
                                             https://www.facebook.com/...</a></li>
                                         <li><a href="#" title=""><i class="fa fa-twitter"></i>
                                             Http://www.Twitter.com/john...</a></li>
@@ -377,65 +440,65 @@ document.getElementById("names").innerHTML = data[0].user.fullName;
                                             Http://www.youtube.com/john...</a></li>
                                     </ul>
                                 </div><!--user_profile end-->
-<!--                                <div class="suggestions full-width">-->
-<!--                                    <div class="sd-title">-->
-<!--                                        <h3>People Viewed Profile</h3>-->
-<!--                                        <i class="la la-ellipsis-v"></i>-->
-<!--                                    </div>&lt;!&ndash;sd-title end&ndash;&gt;-->
-<!--                                    <div class="suggestions-list">-->
-<!--                                        <div class="suggestion-usd">-->
-<!--                                            <img src="http://via.placeholder.com/35x35" alt="">-->
-<!--                                            <div class="sgt-text">-->
-<!--                                                <h4>Jessica William</h4>-->
-<!--                                                <span>Graphic Designer</span>-->
-<!--                                            </div>-->
-<!--                                            <span><i class="la la-plus"></i></span>-->
-<!--                                        </div>-->
-<!--                                        <div class="suggestion-usd">-->
-<!--                                            <img src="http://via.placeholder.com/35x35" alt="">-->
-<!--                                            <div class="sgt-text">-->
-<!--                                                <h4>John Doe</h4>-->
-<!--                                                <span>PHP Developer</span>-->
-<!--                                            </div>-->
-<!--                                            <span><i class="la la-plus"></i></span>-->
-<!--                                        </div>-->
-<!--                                        <div class="suggestion-usd">-->
-<!--                                            <img src="http://via.placeholder.com/35x35" alt="">-->
-<!--                                            <div class="sgt-text">-->
-<!--                                                <h4>Poonam</h4>-->
-<!--                                                <span>Wordpress Developer</span>-->
-<!--                                            </div>-->
-<!--                                            <span><i class="la la-plus"></i></span>-->
-<!--                                        </div>-->
-<!--                                        <div class="suggestion-usd">-->
-<!--                                            <img src="http://via.placeholder.com/35x35" alt="">-->
-<!--                                            <div class="sgt-text">-->
-<!--                                                <h4>Bill Gates</h4>-->
-<!--                                                <span>C & C++ Developer</span>-->
-<!--                                            </div>-->
-<!--                                            <span><i class="la la-plus"></i></span>-->
-<!--                                        </div>-->
-<!--                                        <div class="suggestion-usd">-->
-<!--                                            <img src="http://via.placeholder.com/35x35" alt="">-->
-<!--                                            <div class="sgt-text">-->
-<!--                                                <h4>Jessica William</h4>-->
-<!--                                                <span>Graphic Designer</span>-->
-<!--                                            </div>-->
-<!--                                            <span><i class="la la-plus"></i></span>-->
-<!--                                        </div>-->
-<!--                                        <div class="suggestion-usd">-->
-<!--                                            <img src="http://via.placeholder.com/35x35" alt="">-->
-<!--                                            <div class="sgt-text">-->
-<!--                                                <h4>John Doe</h4>-->
-<!--                                                <span>PHP Developer</span>-->
-<!--                                            </div>-->
-<!--                                            <span><i class="la la-plus"></i></span>-->
-<!--                                        </div>-->
-<!--                                        <div class="view-more">-->
-<!--                                            <a href="#" title="">View More</a>-->
-<!--                                        </div>-->
-<!--                                    </div>&lt;!&ndash;suggestions-list end&ndash;&gt;-->
-<!--                                </div>&lt;!&ndash;suggestions end&ndash;&gt;-->
+                                <!--                                <div class="suggestions full-width">-->
+                                <!--                                    <div class="sd-title">-->
+                                <!--                                        <h3>People Viewed Profile</h3>-->
+                                <!--                                        <i class="la la-ellipsis-v"></i>-->
+                                <!--                                    </div>&lt;!&ndash;sd-title end&ndash;&gt;-->
+                                <!--                                    <div class="suggestions-list">-->
+                                <!--                                        <div class="suggestion-usd">-->
+                                <!--                                            <img src="http://via.placeholder.com/35x35" alt="">-->
+                                <!--                                            <div class="sgt-text">-->
+                                <!--                                                <h4>Jessica William</h4>-->
+                                <!--                                                <span>Graphic Designer</span>-->
+                                <!--                                            </div>-->
+                                <!--                                            <span><i class="la la-plus"></i></span>-->
+                                <!--                                        </div>-->
+                                <!--                                        <div class="suggestion-usd">-->
+                                <!--                                            <img src="http://via.placeholder.com/35x35" alt="">-->
+                                <!--                                            <div class="sgt-text">-->
+                                <!--                                                <h4>John Doe</h4>-->
+                                <!--                                                <span>PHP Developer</span>-->
+                                <!--                                            </div>-->
+                                <!--                                            <span><i class="la la-plus"></i></span>-->
+                                <!--                                        </div>-->
+                                <!--                                        <div class="suggestion-usd">-->
+                                <!--                                            <img src="http://via.placeholder.com/35x35" alt="">-->
+                                <!--                                            <div class="sgt-text">-->
+                                <!--                                                <h4>Poonam</h4>-->
+                                <!--                                                <span>Wordpress Developer</span>-->
+                                <!--                                            </div>-->
+                                <!--                                            <span><i class="la la-plus"></i></span>-->
+                                <!--                                        </div>-->
+                                <!--                                        <div class="suggestion-usd">-->
+                                <!--                                            <img src="http://via.placeholder.com/35x35" alt="">-->
+                                <!--                                            <div class="sgt-text">-->
+                                <!--                                                <h4>Bill Gates</h4>-->
+                                <!--                                                <span>C & C++ Developer</span>-->
+                                <!--                                            </div>-->
+                                <!--                                            <span><i class="la la-plus"></i></span>-->
+                                <!--                                        </div>-->
+                                <!--                                        <div class="suggestion-usd">-->
+                                <!--                                            <img src="http://via.placeholder.com/35x35" alt="">-->
+                                <!--                                            <div class="sgt-text">-->
+                                <!--                                                <h4>Jessica William</h4>-->
+                                <!--                                                <span>Graphic Designer</span>-->
+                                <!--                                            </div>-->
+                                <!--                                            <span><i class="la la-plus"></i></span>-->
+                                <!--                                        </div>-->
+                                <!--                                        <div class="suggestion-usd">-->
+                                <!--                                            <img src="http://via.placeholder.com/35x35" alt="">-->
+                                <!--                                            <div class="sgt-text">-->
+                                <!--                                                <h4>John Doe</h4>-->
+                                <!--                                                <span>PHP Developer</span>-->
+                                <!--                                            </div>-->
+                                <!--                                            <span><i class="la la-plus"></i></span>-->
+                                <!--                                        </div>-->
+                                <!--                                        <div class="view-more">-->
+                                <!--                                            <a href="#" title="">View More</a>-->
+                                <!--                                        </div>-->
+                                <!--                                    </div>&lt;!&ndash;suggestions-list end&ndash;&gt;-->
+                                <!--                                </div>&lt;!&ndash;suggestions end&ndash;&gt;-->
                             </div><!--main-left-sidebar end-->
                         </div>
                         <div class="col-lg-6">
@@ -443,14 +506,6 @@ document.getElementById("names").innerHTML = data[0].user.fullName;
                                 <div class="user-tab-sec">
                                     <h3 id="nameUs"></h3>
                                     <div class="star-descp">
-                                        <span>Graphic Designer at Self Employed</span>
-                                        <ul>
-                                            <li><i class="fa fa-star"></i></li>
-                                            <li><i class="fa fa-star"></i></li>
-                                            <li><i class="fa fa-star"></i></li>
-                                            <li><i class="fa fa-star"></i></li>
-                                            <li><i class="fa fa-star-half-o"></i></li>
-                                        </ul>
                                         <a href="#" title="">Status</a>
                                     </div><!--star-descp end-->
                                     <div class="tab-feed st2">

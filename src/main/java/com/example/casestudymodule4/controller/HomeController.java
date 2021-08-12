@@ -19,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,7 +78,9 @@ public class HomeController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
             Optional<ImageUser> imageUser = iImageUseService.findById(1L);
-            user.setImgUrl((List<ImageUser>) imageUser.get());
+
+            List<ImageUser> imgs = new ArrayList<>();
+            user.setImgUrl(imgs);
             userService.save(user);
             return new ResponseEntity<>(userService.findById(user.getId()).get(), HttpStatus.OK);
         }

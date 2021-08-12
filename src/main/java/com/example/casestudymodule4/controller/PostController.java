@@ -122,7 +122,7 @@ public class PostController {
         return new ResponseEntity<>(post.get(), HttpStatus.OK);
     }
 
-    private static String UPLOAD_DIR = "/img";
+    private static String UPLOAD_DIR = "D:\\img\\";
 
 
 //    @GetMapping("/test")
@@ -132,9 +132,9 @@ public class PostController {
 
     //maps html form to a Model
     @PostMapping("/create/{id}")
-    public ResponseEntity<?> multiUploadFileModel(@PathVariable Long id,@ModelAttribute UploadPost form) {
+    public ResponseEntity<?> multiUploadFileModel(@PathVariable Long id, @ModelAttribute UploadPost form) {
         Post post = new Post();
-postService.save(post);
+        postService.save(post);
         logger.debug("Multiple file upload! With UploadModel");
         String result = null;
         try {
@@ -149,13 +149,14 @@ postService.save(post);
                 if (file.isEmpty()) {
                     continue;
                 }
-                Image image = new Image(post.getId(), UPLOAD_DIR + "/" + file.getOriginalFilename(),userService.findById(id).get());
+                Image image = new Image(post.getId(), UPLOAD_DIR  + file.getOriginalFilename(), userService.findById(id).get());
                 imgs.add(image);
                 imageService.save(image);
             }
             post.setImgs(imgs);
-            post.setDatePost(new Date(Calendar.getInstance().getTime().getTime()));
-
+            long millis = System.currentTimeMillis();
+            java.sql.Date date = new java.sql.Date(millis);
+            post.setDatePost(date);
             post.setView(0);
             post.setStatus(form.getStatus());
             post.setUser(userService.findById(id).get());
@@ -183,7 +184,7 @@ postService.save(post);
             if (file.isEmpty()) {
                 continue;
             }
-            String uploadFilePath = UPLOAD_DIR + "/" + file.getOriginalFilename();
+            String uploadFilePath = UPLOAD_DIR  + file.getOriginalFilename();
 
             byte[] bytes = file.getBytes();
             Path path = Paths.get(uploadFilePath);
