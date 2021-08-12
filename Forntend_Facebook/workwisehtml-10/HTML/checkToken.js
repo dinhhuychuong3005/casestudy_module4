@@ -10,11 +10,12 @@ function setItem() {
     window.localStorage.removeItem("password")
 }
 
-function checkTonke() {
+function checkTonken() {
     console.log(localStorage.getItem("token"))
     if (localStorage.getItem("token") == null) {
         window.location.href = "sign-in.html"
     }
+    window.location.href = "index.html"
 }
 
 function getUserById1(id) {

@@ -53,6 +53,7 @@ public class HomeController {
         User currentUser = userService.findByUserName(user.getUsername()).get();
         return ResponseEntity.ok(new JwtResponse(jwt, currentUser.getId(), userDetails.getUsername(), currentUser.getFullName(), userDetails.getAuthorities()));
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<User> findById(@PathVariable Long id) {
         Optional<User> userOptional = userService.findById(id);
@@ -68,6 +69,8 @@ public class HomeController {
         userService.save(user);
         return new ResponseEntity<>(userService.findById(user.getId()).get(),HttpStatus.OK);
     }
+
+
 //    @PostMapping("/sendEmail/{email}") //gửi email
 //    public ResponseEntity<SimpleMailMessage> sendSimpleEmail(@PathVariable String email) {
 //
