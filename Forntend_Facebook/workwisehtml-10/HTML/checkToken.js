@@ -1,6 +1,13 @@
 function setItem() {
     window.localStorage.removeItem("token")
     window.localStorage.removeItem("total")
+    window.localStorage.removeItem("idFriend");
+    window.localStorage.removeItem("fullNameUs")
+    window.localStorage.removeItem("fullName")
+    window.localStorage.removeItem("idPost_comment")
+    window.localStorage.removeItem("id")
+    window.localStorage.removeItem("user")
+    window.localStorage.removeItem("password")
 }
 
 function checkTonke() {

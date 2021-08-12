@@ -17,6 +17,7 @@
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="stylesheet" type="text/css" href="css/responsive.css">
     <script src="checkToken.js"></script>
+    <script src="idPost.js"></script>
 </head>
 <script>
     function addLikePost(idUser,idPost){
@@ -35,7 +36,10 @@
 
         })
     }
-
+function showContentFriend(idFriend){
+        localStorage.setItem("idFriend",idFriend);
+        window.location.href = "user-profile.html";
+}
     function showUser() {
 
         $.ajax({
@@ -52,7 +56,7 @@
                                 <div class="user-profy">
 
                             <img src="http://via.placeholder.com/57x57" alt="">
-                         <h3>` + data[i].fullName + `</h3>
+                         <h3><a onclick="showContentFriend(`+ data[i].id +`)">` + data[i].fullName + `</a></h3>
                           <span>Graphic Designer</span>
                             <ul>
                    <li><a href="#" title="" onclick="addFriend(` + data[i].id + `)" class="followw">Follow</a></li>
@@ -60,10 +64,13 @@
                    <li><a href="#" title="" class="hire">hire</a></li>
                </ul>
                    <a href="user-profile.html" onclick="getUserById1(` + data[i].id + `)" title="">View Profile</a>
-                                  </div>
+
+ </div>
                                    `
-                    document.getElementById("friendAdd").innerHTML = str;
+
                 }
+
+                document.getElementById("friendAdd").innerHTML = str;
             }
         })
     }
@@ -80,12 +87,20 @@
         })
     }
 
+
+
+    function showCommentByPost(idPost) {
+        window.location.href = "forum-post-view.html";
+        localStorage.setItem("idPost_comment", idPost)
+
+    }
+
 </script>
 
-<body onload=" showUser(),getUserById(),checkTonke(),getListPost()">
+<body onload=" showUser(),getUserById(),checkTonke(),getListPost(),getListPost2()">
 
 
-<div class="wrapper">
+< class="wrapper">
 
 
     <header>
@@ -301,7 +316,7 @@
             <div class="container">
                 <div class="main-section-data">
                     <div class="row">
-                        <div class="col-lg-3 col-md-4 pd-left-none no-pd">
+                        <div class="col-lg-4 col-md-8 pd-left-none no-pd">
                             <div class="main-left-sidebar no-margin">
                                 <div class="user-data full-width">
                                     <div class="user-profile">
@@ -425,13 +440,36 @@
                                             type: "GET",
                                             url: "http://localhost:8080/api/posts/listPostFriend/" + localStorage.getItem("id"),
                                             success: function (data) {
+                                                $.ajax({
+                                                    type: "GET",
+                                                    url: "http://localhost:8080/api/Comment/showComment/" + data[0].id,
+                                                    headers: {"Authorization": 'Bearer ' + localStorage.getItem("token")},
+                                                    success: function (data1) {
+                                                        document.getElementById("totalComment").innerHTML = data1.length + " comment" + `<img src="images/com.png" alt="">`;
+                                                        console.log(data1.length)
+                                                    }
+                                                })
+                                                let date1 = new Date();
+                                                let datePost = new Date(data[0].datePost)
+                                                let datePost1;
+                                                if ((datePost.getSeconds() < date1.getSeconds()) && (datePost.getMinutes() == date1.getMinutes()) && (datePost.getHours() == date1.getHours()) && (datePost.getDate() == date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
+                                                    datePost1 = " " + (date1.getSeconds() - datePost.getSeconds()) + " giây trước"
+                                                } else if ((datePost.getMinutes() < date1.getMinutes()) && (datePost.getHours() == date1.getHours()) && (datePost.getDate() == date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
+                                                    datePost1 = " " + (datePost.getMinutes() - datePost.getMinutes()) + " phút trước";
+                                                } else if ((datePost.getHours() < date1.getHours()) && (datePost.getDate() == date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
+                                                    datePost1 = " " + (date1.getHours() - datePost.getHours()) + " giờ trước"
+                                                } else if ((datePost.getDate() < date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
+                                                    datePost1 = " " + (date1.getDay() - datePost.getDay()) + " ngày trước";
+                                                } else {
+                                                    datePost1 = " " + (date1.getFullYear() - datePost.getFullYear()) + " năm trước";
+                                                }
                                                 let str = `
                                         <div class="post_topbar">
                                             <div class="usy-dt">
                                                 <img src="http://via.placeholder.com/50x50" alt="">
                                                 <div class="usy-name">
                                                     <h3>` + data[0].user.fullName + `</h3>
-                                                    <span><img src="images/clock.png" alt="">3 min ago</span>
+                                                    <span><img src="images/clock.png" alt="">`+ datePost1 +`</span>
                                                 </div>
                                             </div>
                                             <div class="ed-opts">
@@ -457,14 +495,8 @@
                                             </ul>
                                         </div>
                                         <div class="job_descp" id="postFriend">
-                                            <p> ` + data[0].content + ` <a href="#" title="">view more</a></p>
-<!--                                            <ul class="skill-tags">-->
-<!--                                                <li><a href="#" title="">HTML</a></li>-->
-<!--                                                <li><a href="#" title="">PHP</a></li>-->
-<!--                                                <li><a href="#" title="">CSS</a></li>-->
-<!--                                                <li><a href="#" title="">Javascript</a></li>-->
-<!--                                                <li><a href="#" title="">Wordpress</a></li>-->
-<!--                                            </ul>-->
+                                            <p> ` + data[0].content + ` </p>
+
                                                  <div id="imgPost">
 
                                                   </div>
@@ -476,10 +508,10 @@
                                                     <img src="images/liked-img.png" alt="">
                                                     <span>25</span>
                                                 </li>
-                                                <li><a href=""  onclick="checkView(` + data[0].id + `)" title="" class="com"><img src="images/com.png" alt="">
-                                                    Comment 15</a></li>
+                                                <li><a   onclick="checkView(` + data[0].id + `),showCommentByPost(` + data[0].id + `)" title="" class="com" id="totalComment">
+                                                    </a></li>
                                             </ul>
-                                            <a onclick="createComment()"><i class="la la-eye"></i>Views ${data[0].view}</a>
+                                            <a ><i class="la la-eye"></i>Views ${data[0].view}</a>
                                         </div>
 <div class="comment-section">
   <div class="post-comment">
@@ -489,7 +521,7 @@
                                                 <div class="comment_box">
 <!--                                                    <form>-->
                                                         <input type="text" id="postComment" placeholder="Post a comment">
-                                                        <button type="button" onclick="createComment1()">Send</button>
+                                                        <button type="button" onclick="createComment1(`+ data[0].id +`)">Send</button>
 <!--                                                    </form>-->
                                                 </div>
                                             </div>
@@ -500,26 +532,154 @@
                                         })
                                     }
 
-                                    function createComment1() {
-                                        let postComment = document.getElementById("postComment").value;
-                                        console.log(postComment)
-                                        let comment = {
-                                            comment: postComment
-                                        }
+                                    function getListPost2() {
                                         $.ajax({
-                                            headers: {
-                                                'Accept': 'application/json',
-                                                'Content-type': 'application/json'
-                                            },
-                                            type: "POST",
-                                            data: JSON.stringify(comment),
-                                            url: "http://localhost:8080/api/Comment/" + localStorage.getItem("id") + "?comment=" + postComment,
-
+                                            type: "GET",
+                                            url: "http://localhost:8080/api/posts/listPostFriend/" + localStorage.getItem("id"),
                                             success: function (data) {
-                                                console.log(data)
-                                            }
+                                                let str = "";
+                                                for (let i = 1; i < data.length; i++) {
+
+                                                    $.ajax({
+                                                        type: "GET",
+                                                        url: "http://localhost:8080/api/Comment/showComment/" + data[i].id,
+                                                        headers: {"Authorization": 'Bearer ' + localStorage.getItem("token")},
+                                                        success: function (data1) {
+                                                            console.log(data1)
+                                                            // document.getElementById("totalComment1").innerHTML = data1.length + " comment" + ;
+                                                            console.log(data1.length)
+                                                        }
+                                                    })
+                                                    let date1 = new Date();
+                                                    let datePost = new Date(data[i].datePost)
+                                                    let datePost1;
+                                                    if ((datePost.getSeconds() < date1.getSeconds()) && (datePost.getMinutes() == date1.getMinutes()) && (datePost.getHours() == date1.getHours()) && (datePost.getDate() == date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
+                                                        datePost1 = " " + (date1.getSeconds() - datePost.getSeconds()) + " giây trước"
+                                                    } else if ((datePost.getMinutes() < date1.getMinutes()) && (datePost.getHours() == date1.getHours()) && (datePost.getDate() == date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
+                                                        datePost1 = " " + (datePost.getMinutes() - datePost.getMinutes()) + " phút trước";
+                                                    } else if ((datePost.getHours() < date1.getHours()) && (datePost.getDate() == date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
+                                                        datePost1 = " " + (date1.getHours() - datePost.getHours()) + " giờ trước"
+                                                    } else if ((datePost.getDate() < date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
+                                                        datePost1 = " " + (date1.getDay() - datePost.getDay()) + " ngày trước";
+                                                    } else {
+                                                        datePost1 = " " + (date1.getFullYear() - datePost.getFullYear()) + " năm trước";
+                                                    }
+                                                     str += `
+  <div class="posty">
+
+                                        <div class="post_topbar">
+                                            <div class="usy-dt">
+                                                <img src="http://via.placeholder.com/50x50" alt="">
+                                                <div class="usy-name">
+                                                    <h3>` + data[i].user.fullName + `</h3>
+                                                    <span><img src="images/clock.png" alt="">`+ datePost1 +`</span>
+                                                </div>
+                                            </div>
+                                            <div class="ed-opts">
+                                                <a href="#" title="" class="ed-opts-open"><i
+                                                        class="la la-ellipsis-v"></i></a>
+                                                <ul class="ed-options">
+                                                    <li><a class="post-jb active" href="#" title="">Edit Post</a></li>
+                                                    <li><a href="#" title="">Unsaved</a></li>
+                                                    <li><a href="#" title="">Unbid</a></li>
+                                                    <li><a href="#" title="">Close</a></li>
+                                                    <li><a href="#" title="">Hide</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="epi-sec">
+                                            <ul class="descp">
+                                                <li><img src="images/icon8.png" alt=""><span>Epic Coder</span></li>
+                                                <li><img src="images/icon9.png" alt=""><span>India</span></li>
+                                            </ul>
+                                            <ul class="bk-links">
+                                                <li><a href="#" title=""><i class="la la-bookmark"></i></a></li>
+                                                <li><a href="#" title=""><i class="la la-envelope"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="job_descp" id="postFriend">
+                                            <p> ` + data[i].content + ` </p>
+
+                                                <div id="imgPost">
+
+                                                </div>
+                                                </div>
+                                                <div class="job-status-bar">
+                                                <ul class="like-com">
+                                                <li>
+                                                <a href="#"><i class="la la-heart"></i> Like</a>
+                                                <img src="images/liked-img.png" alt="">
+                                                <span>25</span>
+                                                </li>
+                                                <li><a   onclick="checkView(` + data[i].id + `),showCommentByPost(` + data[i].id + `)" title="" class="com" ><img src="images/com.png" alt="">
+                                                </a></li>
+                                                </ul>
+                                                <a ><i class="la la-eye"></i>Views ${data[i].view}</a>
+                                                </div>
+                                                <div class="comment-section">
+                                                <div class="post-comment">
+                                                <div class="cm_img">
+                                                <img src="http://via.placeholder.com/40x40" alt="">
+                                                </div>
+                                                <div class="comment_box">
+
+                                                <input type="text" id="postComment1" placeholder="Post a comment">
+                                                <button type="button" onclick="createComment2(` + data[i].id + `)">Send</button>
+
+                                                </div>
+                                                </div>
+                                                </div>
+</div>
+                                                `;
+                                                }
+                                                document.getElementById("post2").innerHTML = str;
+                                                }
                                         })
                                     }
+                                    function createComment2(idPost) {
+                                        let postComment = document.getElementById("postComment1").value;
+                                        console.log(postComment)
+
+                                        if (postComment == "") {
+                                        } else {
+                                            $.ajax({
+                                                headers: {
+                                                    'Accept': 'application/json',
+                                                    'Content-type': 'application/json'
+                                                },
+                                                type: "POST",
+                                                data: JSON.stringify(postComment),
+                                                url: "http://localhost:8080/api/Comment/" + localStorage.getItem("id") + "/" + idPost + "?comment=" + postComment,
+
+                                                success: function (data) {
+                                                    getListPost()
+                                                }
+                                            })
+                                        }
+                                    }
+
+                                    function createComment1(idPost) {
+                                        let postComment = document.getElementById("postComment").value;
+                                        console.log(postComment)
+
+                                        if (postComment == "") {
+                                        } else {
+                                            $.ajax({
+                                                headers: {
+                                                    'Accept': 'application/json',
+                                                    'Content-type': 'application/json'
+                                                },
+                                                type: "POST",
+                                                data: JSON.stringify(postComment),
+                                                url: "http://localhost:8080/api/Comment/" + localStorage.getItem("id") + "/" + idPost + "?comment=" + postComment,
+
+                                                success: function (data) {
+                                                    getListPost()
+                                                }
+                                            })
+                                        }
+                                    }
+
 
                                     function checkView(id) {
                                         $.ajax({
@@ -539,7 +699,7 @@
                                             <i class="la la-ellipsis-v"></i>
                                         </div>
                                         <div>
-                                            <div class="profiles-slider" id="friendAdd">
+                                            <div class="profiles-slider " id="friendAdd">
                                                 <!--                                            <div class="user-profy" >-->
                                                 <!--                                                <img src="http://via.placeholder.com/57x57" alt="">-->
                                                 <!--                                                <h3>John Doe</h3>-->
@@ -615,7 +775,7 @@
                                             </div><!--profiles-slider end-->
                                         </div>
                                     </div><!--top-profiles end-->
-                                    <div class="post-bar">
+                                    <div class="post-bar" id="post2">
                                         <div class="post_topbar">
                                             <div class="usy-dt">
                                                 <img src="http://via.placeholder.com/50x50" alt="">
@@ -664,151 +824,140 @@
                                                 <li><a href="#" title="">Wordpress</a></li>
                                             </ul>
                                         </div>
-                                        <div class="job-status-bar">
-                                            <ul class="like-com">
-                                                <li>
-                                                    <a href="#"><i class="la la-heart"></i> Like</a>
-                                                    <img src="images/liked-img.png" alt="">
-                                                    <span>25</span>
-                                                </li>
-                                                <li><a href="#" title="" class="com"><img src="images/com.png" alt="">
-                                                    Comment 15</a></li>
-                                            </ul>
-                                            <a><i class="la la-eye"></i>Views 50</a>
-                                        </div>
+
                                     </div><!--post-bar end-->
-                                    <div class="posty">
-                                        <div class="post-bar no-margin">
-                                            <div class="post_topbar">
-                                                <div class="usy-dt">
-                                                    <img src="http://via.placeholder.com/50x50" alt="">
-                                                    <div class="usy-name">
-                                                        <h3>John Doe</h3>
-                                                        <span><img src="images/clock.png" alt="">3 min ago</span>
-                                                    </div>
-                                                </div>
-                                                <div class="ed-opts">
-                                                    <a href="#" title="" class="ed-opts-open"><i
-                                                            class="la la-ellipsis-v"></i></a>
-                                                    <ul class="ed-options">
-                                                        <li><a href="#" title="">Edit Post</a></li>
-                                                        <li><a href="#" title="">Unsaved</a></li>
-                                                        <li><a href="#" title="">Unbid</a></li>
-                                                        <li><a href="#" title="">Close</a></li>
-                                                        <li><a href="#" title="">Hide</a></li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="epi-sec">
-                                                <ul class="descp">
-                                                    <li><img src="images/icon8.png" alt=""><span>Epic Coder</span></li>
-                                                    <li><img src="images/icon9.png" alt=""><span>India</span></li>
-                                                </ul>
-                                                <ul class="bk-links">
-                                                    <li><a href="#" title=""><i class="la la-bookmark"></i></a></li>
-                                                    <li><a href="#" title=""><i class="la la-envelope"></i></a></li>
-                                                </ul>
-                                            </div>
-                                            <div class="job_descp">
-                                                <h3>Senior Wordpress Developer</h3>
-                                                <ul class="job-dt">
-                                                    <li><a href="#" title="">Full Time</a></li>
-                                                    <li><span>$30 / hr</span></li>
-                                                </ul>
-                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam
-                                                    luctus hendrerit metus, ut ullamcorper quam finibus at. Etiam id
-                                                    magna sit amet... <a href="#" title="">view more</a></p>
-                                                <ul class="skill-tags">
-                                                    <li><a href="#" title="">HTML</a></li>
-                                                    <li><a href="#" title="">PHP</a></li>
-                                                    <li><a href="#" title="">CSS</a></li>
-                                                    <li><a href="#" title="">Javascript</a></li>
-                                                    <li><a href="#" title="">Wordpress</a></li>
-                                                </ul>
-                                            </div>
-                                            <div class="job-status-bar">
-                                                <ul class="like-com">
-                                                    <li>
-                                                        <a href="#"><i class="la la-heart"></i> Like</a>
-                                                        <img src="images/liked-img.png" alt="">
-                                                        <span>25</span>
-                                                    </li>
-                                                    <li><a href="#" title="" class="com"><img src="images/com.png"
-                                                                                              alt=""> Comment 15</a>
-                                                    </li>
-                                                </ul>
-                                                <a><i class="la la-eye"></i>Views 50</a>
-                                            </div>
-                                        </div><!--post-bar end-->
-                                        <div class="comment-section">
-                                            <div class="plus-ic">
-                                                <i class="la la-plus"></i>
-                                            </div>
-                                            <div class="comment-sec">
-                                                <ul>
-                                                    <li>
-                                                        <div class="comment-list">
-                                                            <div class="bg-img">
-                                                                <img src="http://via.placeholder.com/40x40" alt="">
-                                                            </div>
-                                                            <div class="comment">
-                                                                <h3>John Doe</h3>
-                                                                <span><img src="images/clock.png"
-                                                                           alt=""> 3 min ago</span>
-                                                                <p>Lorem ipsum dolor sit amet, </p>
-                                                                <a href="#" title="" class="active"><i
-                                                                        class="fa fa-reply-all"></i>Reply</a>
-                                                            </div>
-                                                        </div><!--comment-list end-->
-                                                        <ul>
-                                                            <li>
-                                                                <div class="comment-list">
-                                                                    <div class="bg-img">
-                                                                        <img src="http://via.placeholder.com/40x40"
-                                                                             alt="">
-                                                                    </div>
-                                                                    <div class="comment">
-                                                                        <h3>John Doe</h3>
-                                                                        <span><img src="images/clock.png" alt=""> 3 min ago</span>
-                                                                        <p>Hi John </p>
-                                                                        <a href="#" title=""><i
-                                                                                class="fa fa-reply-all"></i>Reply</a>
-                                                                    </div>
-                                                                </div><!--comment-list end-->
-                                                            </li>
-                                                        </ul>
-                                                    </li>
-                                                    <li>
-                                                        <div class="comment-list">
-                                                            <div class="bg-img">
-                                                                <img src="http://via.placeholder.com/40x40" alt="">
-                                                            </div>
-                                                            <div class="comment">
-                                                                <h3>John Doe</h3>
-                                                                <span><img src="images/clock.png"
-                                                                           alt=""> 3 min ago</span>
-                                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing
-                                                                    elit. Aliquam luctus hendrerit metus, ut ullamcorper
-                                                                    quam finibus at.</p>
-                                                                <a href="#" title=""><i class="fa fa-reply-all"></i>Reply</a>
-                                                            </div>
-                                                        </div><!--comment-list end-->
-                                                    </li>
-                                                </ul>
-                                            </div><!--comment-sec end-->
-                                            <div class="post-comment">
-                                                <div class="cm_img">
-                                                    <img src="http://via.placeholder.com/40x40" alt="">
-                                                </div>
-                                                <div class="comment_box">
-                                                    <!--                                                    <form>-->
-                                                    <input type="text" placeholder="Post a comment">
-                                                    <button type="submit">Send</button>
-                                                    <!--                                                    </form>-->
-                                                </div>
-                                            </div><!--post-comment end-->
-                                        </div><!--comment-section end-->
-                                    </div><!--posty end-->
+<!--                                    <div class="posty">-->
+<!--                                        <div class="post-bar no-margin">-->
+<!--                                            <div class="post_topbar">-->
+<!--                                                <div class="usy-dt">-->
+<!--                                                    <img src="http://via.placeholder.com/50x50" alt="">-->
+<!--                                                    <div class="usy-name">-->
+<!--                                                        <h3>John Doe</h3>-->
+<!--                                                        <span><img src="images/clock.png" alt="">3 min ago</span>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
+<!--                                                <div class="ed-opts">-->
+<!--                                                    <a href="#" title="" class="ed-opts-open"><i-->
+<!--                                                            class="la la-ellipsis-v"></i></a>-->
+<!--                                                    <ul class="ed-options">-->
+<!--                                                        <li><a href="#" title="">Edit Post</a></li>-->
+<!--                                                        <li><a href="#" title="">Unsaved</a></li>-->
+<!--                                                        <li><a href="#" title="">Unbid</a></li>-->
+<!--                                                        <li><a href="#" title="">Close</a></li>-->
+<!--                                                        <li><a href="#" title="">Hide</a></li>-->
+<!--                                                    </ul>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                            <div class="epi-sec">-->
+<!--                                                <ul class="descp">-->
+<!--                                                    <li><img src="images/icon8.png" alt=""><span>Epic Coder</span></li>-->
+<!--                                                    <li><img src="images/icon9.png" alt=""><span>India</span></li>-->
+<!--                                                </ul>-->
+<!--                                                <ul class="bk-links">-->
+<!--                                                    <li><a href="#" title=""><i class="la la-bookmark"></i></a></li>-->
+<!--                                                    <li><a href="#" title=""><i class="la la-envelope"></i></a></li>-->
+<!--                                                </ul>-->
+<!--                                            </div>-->
+<!--                                            <div class="job_descp">-->
+<!--                                                <h3>Senior Wordpress Developer</h3>-->
+<!--                                                <ul class="job-dt">-->
+<!--                                                    <li><a href="#" title="">Full Time</a></li>-->
+<!--                                                    <li><span>$30 / hr</span></li>-->
+<!--                                                </ul>-->
+<!--                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam-->
+<!--                                                    luctus hendrerit metus, ut ullamcorper quam finibus at. Etiam id-->
+<!--                                                    magna sit amet... <a href="#" title="">view more</a></p>-->
+<!--                                                <ul class="skill-tags">-->
+<!--                                                    <li><a href="#" title="">HTML</a></li>-->
+<!--                                                    <li><a href="#" title="">PHP</a></li>-->
+<!--                                                    <li><a href="#" title="">CSS</a></li>-->
+<!--                                                    <li><a href="#" title="">Javascript</a></li>-->
+<!--                                                    <li><a href="#" title="">Wordpress</a></li>-->
+<!--                                                </ul>-->
+<!--                                            </div>-->
+<!--                                            <div class="job-status-bar">-->
+<!--                                                <ul class="like-com">-->
+<!--                                                    <li>-->
+<!--                                                        <a href="#"><i class="la la-heart"></i> Like</a>-->
+<!--                                                        <img src="images/liked-img.png" alt="">-->
+<!--                                                        <span>25</span>-->
+<!--                                                    </li>-->
+<!--                                                    <li><a href="#" title="" class="com"><img src="images/com.png"-->
+<!--                                                                                              alt=""> Comment 15</a>-->
+<!--                                                    </li>-->
+<!--                                                </ul>-->
+<!--                                                <a><i class="la la-eye"></i>Views 50</a>-->
+<!--                                            </div>-->
+<!--                                        </div>&lt;!&ndash;post-bar end&ndash;&gt;-->
+<!--                                        <div class="comment-section">-->
+<!--                                            <div class="plus-ic">-->
+<!--                                                <i class="la la-plus"></i>-->
+<!--                                            </div>-->
+<!--                                            <div class="comment-sec">-->
+<!--                                                <ul>-->
+<!--                                                    <li>-->
+<!--                                                        <div class="comment-list">-->
+<!--                                                            <div class="bg-img">-->
+<!--                                                                <img src="http://via.placeholder.com/40x40" alt="">-->
+<!--                                                            </div>-->
+<!--                                                            <div class="comment">-->
+<!--                                                                <h3>John Doe</h3>-->
+<!--                                                                <span><img src="images/clock.png"-->
+<!--                                                                           alt=""> 3 min ago</span>-->
+<!--                                                                <p>Lorem ipsum dolor sit amet, </p>-->
+<!--                                                                <a href="#" title="" class="active"><i-->
+<!--                                                                        class="fa fa-reply-all"></i>Reply</a>-->
+<!--                                                            </div>-->
+<!--                                                        </div>&lt;!&ndash;comment-list end&ndash;&gt;-->
+<!--                                                        <ul>-->
+<!--                                                            <li>-->
+<!--                                                                <div class="comment-list">-->
+<!--                                                                    <div class="bg-img">-->
+<!--                                                                        <img src="http://via.placeholder.com/40x40"-->
+<!--                                                                             alt="">-->
+<!--                                                                    </div>-->
+<!--                                                                    <div class="comment">-->
+<!--                                                                        <h3>John Doe</h3>-->
+<!--                                                                        <span><img src="images/clock.png" alt=""> 3 min ago</span>-->
+<!--                                                                        <p>Hi John </p>-->
+<!--                                                                        <a href="#" title=""><i-->
+<!--                                                                                class="fa fa-reply-all"></i>Reply</a>-->
+<!--                                                                    </div>-->
+<!--                                                                </div>&lt;!&ndash;comment-list end&ndash;&gt;-->
+<!--                                                            </li>-->
+<!--                                                        </ul>-->
+<!--                                                    </li>-->
+<!--                                                    <li>-->
+<!--                                                        <div class="comment-list">-->
+<!--                                                            <div class="bg-img">-->
+<!--                                                                <img src="http://via.placeholder.com/40x40" alt="">-->
+<!--                                                            </div>-->
+<!--                                                            <div class="comment">-->
+<!--                                                                <h3>John Doe</h3>-->
+<!--                                                                <span><img src="images/clock.png"-->
+<!--                                                                           alt=""> 3 min ago</span>-->
+<!--                                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing-->
+<!--                                                                    elit. Aliquam luctus hendrerit metus, ut ullamcorper-->
+<!--                                                                    quam finibus at.</p>-->
+<!--                                                                <a href="#" title=""><i class="fa fa-reply-all"></i>Reply</a>-->
+<!--                                                            </div>-->
+<!--                                                        </div>&lt;!&ndash;comment-list end&ndash;&gt;-->
+<!--                                                    </li>-->
+<!--                                                </ul>-->
+<!--                                            </div>&lt;!&ndash;comment-sec end&ndash;&gt;-->
+<!--                                            <div class="post-comment">-->
+<!--                                                <div class="cm_img">-->
+<!--                                                    <img src="http://via.placeholder.com/40x40" alt="">-->
+<!--                                                </div>-->
+<!--                                                <div class="comment_box">-->
+<!--                                                    &lt;!&ndash;                                                    <form>&ndash;&gt;-->
+<!--                                                    <input type="text" placeholder="Post a comment">-->
+<!--                                                    <button type="submit">Send</button>-->
+<!--                                                    &lt;!&ndash;                                                    </form>&ndash;&gt;-->
+<!--                                                </div>-->
+<!--                                            </div>&lt;!&ndash;post-comment end&ndash;&gt;-->
+<!--                                        </div>&lt;!&ndash;comment-section end&ndash;&gt;-->
+<!--                                    </div>&lt;!&ndash;posty end&ndash;&gt;-->
                                     <div class="process-comm">
                                         <div class="spinner">
                                             <div class="bounce1"></div>
@@ -819,170 +968,171 @@
                                 </div><!--posts-section end-->
                             </div><!--main-ws-sec end-->
                         </div>
-                        <div class="col-lg-3 pd-right-none no-pd">
-                            <div class="right-sidebar">
-                                <div class="widget widget-about">
-                                    <img src="images/wd-logo.png" alt="">
-                                    <h3>Track Time on Workwise</h3>
-                                    <span>Pay only for the Hours worked</span>
-                                    <div class="sign_link">
-                                        <h3><a href="#" title="">Sign up</a></h3>
-                                        <a href="#" title="">Learn More</a>
-                                    </div>
-                                </div><!--widget-about end-->
-                                <div class="widget widget-jobs">
-                                    <div class="sd-title">
-                                        <h3>Top Jobs</h3>
-                                        <i class="la la-ellipsis-v"></i>
-                                    </div>
-                                    <div class="jobs-list">
-                                        <div class="job-info">
-                                            <div class="job-details">
-                                                <h3>Senior Product Designer</h3>
-                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit..</p>
-                                            </div>
-                                            <div class="hr-rate">
-                                                <span>$25/hr</span>
-                                            </div>
-                                        </div><!--job-info end-->
-                                        <div class="job-info">
-                                            <div class="job-details">
-                                                <h3>Senior UI / UX Designer</h3>
-                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit..</p>
-                                            </div>
-                                            <div class="hr-rate">
-                                                <span>$25/hr</span>
-                                            </div>
-                                        </div><!--job-info end-->
-                                        <div class="job-info">
-                                            <div class="job-details">
-                                                <h3>Junior Seo Designer</h3>
-                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit..</p>
-                                            </div>
-                                            <div class="hr-rate">
-                                                <span>$25/hr</span>
-                                            </div>
-                                        </div><!--job-info end-->
-                                        <div class="job-info">
-                                            <div class="job-details">
-                                                <h3>Senior PHP Designer</h3>
-                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit..</p>
-                                            </div>
-                                            <div class="hr-rate">
-                                                <span>$25/hr</span>
-                                            </div>
-                                        </div><!--job-info end-->
-                                        <div class="job-info">
-                                            <div class="job-details">
-                                                <h3>Senior Developer Designer</h3>
-                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit..</p>
-                                            </div>
-                                            <div class="hr-rate">
-                                                <span>$25/hr</span>
-                                            </div>
-                                        </div><!--job-info end-->
-                                    </div><!--jobs-list end-->
-                                </div><!--widget-jobs end-->
-                                <div class="widget widget-jobs">
-                                    <div class="sd-title">
-                                        <h3>Most Viewed This Week</h3>
-                                        <i class="la la-ellipsis-v"></i>
-                                    </div>
-                                    <div class="jobs-list">
-                                        <div class="job-info">
-                                            <div class="job-details">
-                                                <h3>Senior Product Designer</h3>
-                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit..</p>
-                                            </div>
-                                            <div class="hr-rate">
-                                                <span>$25/hr</span>
-                                            </div>
-                                        </div><!--job-info end-->
-                                        <div class="job-info">
-                                            <div class="job-details">
-                                                <h3>Senior UI / UX Designer</h3>
-                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit..</p>
-                                            </div>
-                                            <div class="hr-rate">
-                                                <span>$25/hr</span>
-                                            </div>
-                                        </div><!--job-info end-->
-                                        <div class="job-info">
-                                            <div class="job-details">
-                                                <h3>Junior Seo Designer</h3>
-                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit..</p>
-                                            </div>
-                                            <div class="hr-rate">
-                                                <span>$25/hr</span>
-                                            </div>
-                                        </div><!--job-info end-->
-                                    </div><!--jobs-list end-->
-                                </div><!--widget-jobs end-->
+<!--                        <div class="col-lg-3 pd-right-none no-pd">-->
+<!--                            <div class="right-sidebar">-->
+<!--                                <div class="widget widget-about">-->
+<!--                                    <img src="images/wd-logo.png" alt="">-->
+<!--                                    <h3>Track Time on Workwise</h3>-->
+<!--                                    <span>Pay only for the Hours worked</span>-->
+<!--                                    <div class="sign_link">-->
+<!--                                        <h3><a href="#" title="">Sign up</a></h3>-->
+<!--                                        <a href="#" title="">Learn More</a>-->
+<!--                                    </div>-->
+<!--                                </div>&lt;!&ndash;widget-about end&ndash;&gt;-->
+<!--                                <div class="widget widget-jobs">-->
+<!--                                    <div class="sd-title">-->
+<!--                                        <h3>Top Jobs</h3>-->
+<!--                                        <i class="la la-ellipsis-v"></i>-->
+<!--                                    </div>-->
+<!--                                    <div class="jobs-list">-->
+<!--                                        <div class="job-info">-->
+<!--                                            <div class="job-details">-->
+<!--                                                <h3>Senior Product Designer</h3>-->
+<!--                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit..</p>-->
+<!--                                            </div>-->
+<!--                                            <div class="hr-rate">-->
+<!--                                                <span>$25/hr</span>-->
+<!--                                            </div>-->
+<!--                                        </div>&lt;!&ndash;job-info end&ndash;&gt;-->
+<!--                                        <div class="job-info">-->
+<!--                                            <div class="job-details">-->
+<!--                                                <h3>Senior UI / UX Designer</h3>-->
+<!--                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit..</p>-->
+<!--                                            </div>-->
+<!--                                            <div class="hr-rate">-->
+<!--                                                <span>$25/hr</span>-->
+<!--                                            </div>-->
+<!--                                        </div>&lt;!&ndash;job-info end&ndash;&gt;-->
+<!--                                        <div class="job-info">-->
+<!--                                            <div class="job-details">-->
+<!--                                                <h3>Junior Seo Designer</h3>-->
+<!--                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit..</p>-->
+<!--                                            </div>-->
+<!--                                            <div class="hr-rate">-->
+<!--                                                <span>$25/hr</span>-->
+<!--                                            </div>-->
+<!--                                        </div>&lt;!&ndash;job-info end&ndash;&gt;-->
+<!--                                        <div class="job-info">-->
+<!--                                            <div class="job-details">-->
+<!--                                                <h3>Senior PHP Designer</h3>-->
+<!--                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit..</p>-->
+<!--                                            </div>-->
+<!--                                            <div class="hr-rate">-->
+<!--                                                <span>$25/hr</span>-->
+<!--                                            </div>-->
+<!--                                        </div>&lt;!&ndash;job-info end&ndash;&gt;-->
+<!--                                        <div class="job-info">-->
+<!--                                            <div class="job-details">-->
+<!--                                                <h3>Senior Developer Designer</h3>-->
+<!--                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit..</p>-->
+<!--                                            </div>-->
+<!--                                            <div class="hr-rate">-->
+<!--                                                <span>$25/hr</span>-->
+<!--                                            </div>-->
+<!--                                        </div>&lt;!&ndash;job-info end&ndash;&gt;-->
+<!--                                    </div>&lt;!&ndash;jobs-list end&ndash;&gt;-->
+<!--                                </div>&lt;!&ndash;widget-jobs end&ndash;&gt;-->
+<!--                                <div class="widget widget-jobs">-->
+<!--                                    <div class="sd-title">-->
+<!--                                        <h3>Most Viewed This Week</h3>-->
+<!--                                        <i class="la la-ellipsis-v"></i>-->
+<!--                                    </div>-->
+<!--                                    <div class="jobs-list">-->
+<!--                                        <div class="job-info">-->
+<!--                                            <div class="job-details">-->
+<!--                                                <h3>Senior Product Designer</h3>-->
+<!--                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit..</p>-->
+<!--                                            </div>-->
+<!--                                            <div class="hr-rate">-->
+<!--                                                <span>$25/hr</span>-->
+<!--                                            </div>-->
+<!--                                        </div>&lt;!&ndash;job-info end&ndash;&gt;-->
+<!--                                        <div class="job-info">-->
+<!--                                            <div class="job-details">-->
+<!--                                                <h3>Senior UI / UX Designer</h3>-->
+<!--                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit..</p>-->
+<!--                                            </div>-->
+<!--                                            <div class="hr-rate">-->
+<!--                                                <span>$25/hr</span>-->
+<!--                                            </div>-->
+<!--                                        </div>&lt;!&ndash;job-info end&ndash;&gt;-->
+<!--                                        <div class="job-info">-->
+<!--                                            <div class="job-details">-->
+<!--                                                <h3>Junior Seo Designer</h3>-->
+<!--                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit..</p>-->
+<!--                                            </div>-->
+<!--                                            <div class="hr-rate">-->
+<!--                                                <span>$25/hr</span>-->
+<!--                                            </div>-->
+<!--                                        </div>&lt;!&ndash;job-info end&ndash;&gt;-->
+<!--                                    </div>&lt;!&ndash;jobs-list end&ndash;&gt;-->
+<!--                                </div>&lt;!&ndash;widget-jobs end&ndash;&gt;-->
                                 <div class="widget suggestions full-width">
-                                    <div class="sd-title">
-                                        <h3>Most Viewed People</h3>
-                                        <i class="la la-ellipsis-v"></i>
-                                    </div><!--sd-title end-->
-                                    <div class="suggestions-list">
-                                        <div class="suggestion-usd">
-                                            <img src="http://via.placeholder.com/35x35" alt="">
-                                            <div class="sgt-text">
-                                                <h4>Jessica William</h4>
-                                                <span>Graphic Designer</span>
-                                            </div>
-                                            <span><i class="la la-plus"></i></span>
-                                        </div>
-                                        <div class="suggestion-usd">
-                                            <img src="http://via.placeholder.com/35x35" alt="">
-                                            <div class="sgt-text">
-                                                <h4>John Doe</h4>
-                                                <span>PHP Developer</span>
-                                            </div>
-                                            <span><i class="la la-plus"></i></span>
-                                        </div>
-                                        <div class="suggestion-usd">
-                                            <img src="http://via.placeholder.com/35x35" alt="">
-                                            <div class="sgt-text">
-                                                <h4>Poonam</h4>
-                                                <span>Wordpress Developer</span>
-                                            </div>
-                                            <span><i class="la la-plus"></i></span>
-                                        </div>
-                                        <div class="suggestion-usd">
-                                            <img src="http://via.placeholder.com/35x35" alt="">
-                                            <div class="sgt-text">
-                                                <h4>Bill Gates</h4>
-                                                <span>C &amp; C++ Developer</span>
-                                            </div>
-                                            <span><i class="la la-plus"></i></span>
-                                        </div>
-                                        <div class="suggestion-usd">
-                                            <img src="http://via.placeholder.com/35x35" alt="">
-                                            <div class="sgt-text">
-                                                <h4>Jessica William</h4>
-                                                <span>Graphic Designer</span>
-                                            </div>
-                                            <span><i class="la la-plus"></i></span>
-                                        </div>
-                                        <div class="suggestion-usd">
-                                            <img src="http://via.placeholder.com/35x35" alt="">
-                                            <div class="sgt-text">
-                                                <h4>John Doe</h4>
-                                                <span>PHP Developer</span>
-                                            </div>
-                                            <span><i class="la la-plus"></i></span>
-                                        </div>
-                                        <div class="view-more">
-                                            <a href="#" title="">View More</a>
-                                        </div>
-                                    </div><!--suggestions-list end-->
+<!--                                    <div class="sd-title">-->
+<!--                                        <h3>Most Viewed People</h3>-->
+<!--                                        <i class="la la-ellipsis-v"></i>-->
+<!--                                    </div>&lt;!&ndash;sd-title end&ndash;&gt;-->
+<!--                                    <div class="suggestions-list">-->
+<!--                                        <div class="suggestion-usd">-->
+<!--                                            <img src="http://via.placeholder.com/35x35" alt="">-->
+<!--                                            <div class="sgt-text">-->
+<!--                                                <h4>Jessica William</h4>-->
+<!--                                                <span>Graphic Designer</span>-->
+<!--                                            </div>-->
+<!--                                            <span><i class="la la-plus"></i></span>-->
+<!--                                        </div>-->
+<!--                                        <div class="suggestion-usd">-->
+<!--                                            <img src="http://via.placeholder.com/35x35" alt="">-->
+<!--                                            <div class="sgt-text">-->
+<!--                                                <h4>John Doe</h4>-->
+<!--                                                <span>PHP Developer</span>-->
+<!--                                            </div>-->
+<!--                                            <span><i class="la la-plus"></i></span>-->
+<!--                                        </div>-->
+<!--                                        <div class="suggestion-usd">-->
+<!--                                            <img src="http://via.placeholder.com/35x35" alt="">-->
+<!--                                            <div class="sgt-text">-->
+<!--                                                <h4>Poonam</h4>-->
+<!--                                                <span>Wordpress Developer</span>-->
+<!--                                            </div>-->
+<!--                                            <span><i class="la la-plus"></i></span>-->
+<!--                                        </div>-->
+<!--                                        <div class="suggestion-usd">-->
+<!--                                            <img src="http://via.placeholder.com/35x35" alt="">-->
+<!--                                            <div class="sgt-text">-->
+<!--                                                <h4>Bill Gates</h4>-->
+<!--                                                <span>C &amp; C++ Developer</span>-->
+<!--                                            </div>-->
+<!--                                            <span><i class="la la-plus"></i></span>-->
+<!--                                        </div>-->
+<!--                                        <div class="suggestion-usd">-->
+<!--                                            <img src="http://via.placeholder.com/35x35" alt="">-->
+<!--                                            <div class="sgt-text">-->
+<!--                                                <h4>Jessica William</h4>-->
+<!--                                                <span>Graphic Designer</span>-->
+<!--                                            </div>-->
+<!--                                            <span><i class="la la-plus"></i></span>-->
+<!--                                        </div>-->
+<!--                                        <div class="suggestion-usd">-->
+<!--                                            <img src="http://via.placeholder.com/35x35" alt="">-->
+<!--                                            <div class="sgt-text">-->
+<!--                                                <h4>John Doe</h4>-->
+<!--                                                <span>PHP Developer</span>-->
+<!--                                            </div>-->
+<!--                                            <span><i class="la la-plus"></i></span>-->
+<!--                                        </div>-->
+<!--                                        <div class="view-more">-->
+<!--                                            <a href="#" title="">View More</a>-->
+<!--                                        </div>-->
+<!--                                    </div>&lt;!&ndash;suggestions-list end&ndash;&gt;-->
                                 </div>
                             </div><!--right-sidebar end-->
                         </div>
                     </div>
                 </div><!-- main-section-data end-->
-            </div>
+
         </div>
+
     </main>
 
 
@@ -1057,7 +1207,7 @@
                             </div>
                         </div>
                         <div class="col-lg-12">
-                            <input type="file" id="img" name="img" placeholder="img">
+
                         </div>
                         <!--                        <div class="col-lg-6">-->
                         <!--                            <div class="price-br">-->
