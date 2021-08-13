@@ -19,9 +19,9 @@
     <script src="checkToken.js"></script>
 </head>
 <script>
-    function showCommentByPost1(idPost, status) {
+    function showCommentByPost1(idPost, status,data) {
         console.log(status)
-        if (status == 2) {
+        if (status == 2 || data == 0) {
             alert("không có bình luận nào")
         } else {
             window.location.href = "forum-post-view.html";
@@ -43,19 +43,23 @@
                 for (let i = 0; i < data.length; i++) {
 
                     let datePost = new Date(data[i].datePost)
-
-                    if ((datePost.getSeconds() < date1.getSeconds()) && (datePost.getMinutes() == date1.getMinutes()) && (datePost.getHours() == date1.getHours()) && (datePost.getDate() == date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
-                        datePost1 = " " + (date1.getSeconds() - datePost.getSeconds()) + " giây trước"
-                    } else if ((datePost.getMinutes() < date1.getMinutes()) && (datePost.getHours() == date1.getHours()) && (datePost.getDate() == date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
-                        datePost1 = " " + (datePost.getMinutes() - datePost.getMinutes()) + " phút trước";
-                    } else if ((datePost.getHours() < date1.getHours()) && (datePost.getDate() == date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
-                        datePost1 = " " + (date1.getHours() - datePost.getHours()) + " giờ trước"
-                    } else if ((datePost.getDate() < date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
-                        datePost1 = " " + (date1.getDay() - datePost.getDay()) + " ngày trước";
-                    } else {
-                        datePost1 = " " + (date1.getFullYear() - datePost.getFullYear()) + " năm trước";
-                    }
-                    str += `<div class="post-bar">
+                    $.ajax({
+                        type: "GET",
+                        url: "http://localhost:8080/api/Comment/showComment/" + data[i].id,
+                        headers: {"Authorization": 'Bearer ' + localStorage.getItem("token")},
+                        success: function (data1) {
+                            if ((datePost.getSeconds() < date1.getSeconds()) && (datePost.getMinutes() == date1.getMinutes()) && (datePost.getHours() == date1.getHours()) && (datePost.getDate() == date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
+                                datePost1 = " " + (date1.getSeconds() - datePost.getSeconds()) + " giây trước"
+                            } else if ((datePost.getMinutes() < date1.getMinutes()) && (datePost.getHours() == date1.getHours()) && (datePost.getDate() == date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
+                                datePost1 = " " + (datePost.getMinutes() - datePost.getMinutes()) + " phút trước";
+                            } else if ((datePost.getHours() < date1.getHours()) && (datePost.getDate() == date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
+                                datePost1 = " " + (date1.getHours() - datePost.getHours()) + " giờ trước"
+                            } else if ((datePost.getDate() < date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
+                                datePost1 = " " + (date1.getDay() - datePost.getDay()) + " ngày trước";
+                            } else {
+                                datePost1 = " " + (date1.getFullYear() - datePost.getFullYear()) + " năm trước";
+                            }
+                            str += `<div class="post-bar">
                                                                                     <div class="post_topbar">
                                                                                         <div class="usy-dt">
                                                                                             <img src="http://via.placeholder.com/50x50" alt="">
@@ -85,26 +89,39 @@
                                                                                     <div class="job-status-bar">
                                                                                         <ul class="like-com">
                                                                                             <li>
-                                                                                                <a href="#"><i class="la la-heart"></i> Like</a>
+                                                                                                <a  onclick="checkLike(${data[i].id})"><i class="la la-heart"></i> Like</a>
                                                                                                 <img src="images/liked-img.png" alt="">
-                                                                                                <span>25</span>
+                                                                                                <span id="` + i + `"></span>
                                                                                             </li>
-                                                                                            <li><a onclick="showCommentByPost1(` + data[i].id + `,` + data[i].status + `)" title="" class="com"><img src="images/com.png"
-                                                                                                                                      alt=""> Comment 15</a>
+                                                                                            <li><a onclick="showCommentByPost1(` + data[i].id + `,` + data[i].status + `,`+ data1.length +`)" title="" class="com"><img src="images/com.png"
+                                                                                                                                      alt=""> ${data1.length}</a>
                                                                                             </li>
                                                                                         </ul>
                                                                                         <a><i class="la la-eye"></i>` + data[i].view + `</a>
                                                                                     </div>
                                                                                 </div>`
+                            $.ajax({
+                                type: "GET",
+                                url: "http://localhost:8080/api/like/" + data[i].id,
+                                headers: {"Authorization": 'Bearer ' + localStorage.getItem("token")},
+                                success: function (data2) {
+                                    console.log(data2.length)
+                                    document.getElementById(``+ i +``).innerHTML = data2.length;
+                                    console.log(data2.length)
+                                }
+                            })
+
+                            document.getElementById("showPost").innerHTML = str;
+                        }
+                    })
                 }
-                document.getElementById("showPost").innerHTML = str;
             }
         })
 
     }
 </script>
 
-<body onload="checkTonke(),showPostUser(),showAvata()">
+<body onload="checkTonke(),showPostUser()">
 
 
 <div class="wrapper">
@@ -358,6 +375,7 @@
                     console.log("SUCCESS : ", data);
                     $("#submitButton").prop("disabled", false);
                     $('#fileUploadForm')[0].reset();
+                    onload(showPostUser)
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
 
@@ -370,12 +388,21 @@
 
         }
 
-        function showAvata() {
+        // function showAvata() {
+        //     $.ajax({
+        //         type: "GET",
+        //         url: "http://localhost:8080/api/avatar/" + localStorage.getItem("id"),
+        //         success: function (data) {
+        //             document.getElementById("upAvt").innerHTML = `<img src="${data.urlImg}" alt="">`
+        //         }
+        //     })
+        // }
+        function checkLike(id) {
             $.ajax({
-                type: "GET",
-                url: "http://localhost:8080/api/avatar/" + localStorage.getItem("id"),
-                success: function (data) {
-                    document.getElementById("upAvt").innerHTML = `<img src="${data.urlImg}" alt="">`
+                type: "POST",
+                url: "http://localhost:8080/api/like/create/" + id + "/" + localStorage.getItem("id"),
+                success: function (){
+                    showPostUser()
                 }
             })
         }
@@ -388,22 +415,22 @@
                         <div class="col-lg-3">
                             <div class="main-left-sidebar">
                                 <div class="user_profile">
-                                    <form method="POST" enctype="multipart/form-data" id="fileUploadForm">
+
                                         <div class="user-pro-img">
 
-                                            <div id="upAvt">
 
-                                            </div>
+                                            <img src="http://via.placeholder.com/170x170" alt="">
+
 
                                             <a> <label class="fa fa-camera" for="file"></label> </a>
-                                            <input type="file" id="file" style="display: none" class="hidden"/>
-                                            <button class="active" type="submit" onclick="ajaxSubmitForm()"
-                                                    value="submit"
-                                                    id="submitButton">Post
-                                            </button>
+                                            <input name="files" type="file" id="file" style="display: none" class="hidden"/>
+<!--                                            <button class="active" type="button" onclick="ajaxSubmitForm()"-->
+<!--                                                    value="submit"-->
+<!--                                                    id="submitButton">Post-->
+<!--                                            </button>-->
                                         </div><!--user-pro-img end-->
 
-                                    </form>
+
                                     <div class="user_pro_status">
                                         <ul class="flw-hr">
                                             <li><a href="#" title="" class="flww"><i class="la la-plus"></i> Follow</a>

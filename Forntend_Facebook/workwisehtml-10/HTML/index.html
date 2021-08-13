@@ -154,12 +154,7 @@
                                 Friend
                             </a>
                         </li>
-                        <div style="margin-left: 20%" class="search-bar">
-                            <form>
-                                <input type="text" id="searchPost" name="search" placeholder="Search post">
-                                <button type="submit"><i class="la la-search"></i></button>
-                            </form>
-                        </div>
+
                         <!--                        <li>-->
                         <!--                            <a href="jobs.html" title="">-->
                         <!--                                <span><img src="images/icon5.png" alt=""></span>-->
@@ -275,9 +270,7 @@
                 </div><!--menu-btn end-->
                 <div class="user-account">
                     <div class="user-info">
-                        <img width="30" height="30"
-                             src="https://scontent.fhan5-6.fna.fbcdn.net/v/t1.6435-9/156911652_1741974435964297_901809339056874310_n.jpg?_nc_cat=107&ccb=1-4&_nc_sid=09cbfe&_nc_ohc=gP84Z9c0wl0AX8AUVzJ&_nc_oc=AQnJBtTddi70VbklvTVCJSEnes6yJm0RjUbpubyiU3oFZRi78I8qBPzfoChCSMBq3O4&tn=7gV0dNAdpcPnQ6-z&_nc_ht=scontent.fhan5-6.fna&oh=8fb5f48ef782b19bf3bc43d5407e69ac&oe=6133D687"
-                             alt="">
+
 
                         <a href="#" title="" id="name"> </a>
 
@@ -530,7 +523,7 @@
                                                     </div>`
                                                 } else {
                                                     str += ` <div id="imgPost1">
- <img src="` + data[0].imgs[0].linkImage + `" style="width: 450px" height="300px">
+ <img src="` + data[0].imgs[0].linkImage + `" style="width: 400px" height="300px">
                                                   </div>`
                                                 }
                                                 str +=
@@ -569,7 +562,7 @@
 function checkLike2(id){
     $.ajax({
         type: "GET",
-        url: "http://localhost:8080/api/like/" + id,
+        url: "http://localhost:8080/api/like/" + (id -10),
         headers: {"Authorization": 'Bearer ' + localStorage.getItem("token")},
         success: function (data2) {
             document.getElementById(``+ id  +``).innerHTML = data2.length;
@@ -586,6 +579,7 @@ function checkLike2(id){
                                                 let str = "";
                                                 for (let i = 1; i < data.length; i++) {
 console.log(data)
+
                                                     $.ajax({
                                                         type: "GET",
                                                         url: "http://localhost:8080/api/Comment/showComment/" + data[i].id,
@@ -650,7 +644,7 @@ console.log(data)
                                                             console.log("b")
                                                             } else {
                                                                 str += ` <div id="imgPost1">
-<img src="${data[i].imgs[0].linkImage}" style="width: 450px" height="300px">
+<img src="${data[i].imgs[0].linkImage}" style="width: 460px" height="350px">
                                                   </div>`
                                                                 console.log(``+ data +``)
                                                             }
@@ -660,9 +654,9 @@ console.log(data)
                                                 <div class="job-status-bar">
                                                 <ul class="like-com">
                                                 <li>
-                                                 <a  onclick="checkLike(` + data[i].id + `),checkLike2(`+ i + 10 +`)"><i class="la la-heart"></i> Like</a>
+                                                 <a  onclick="checkLike(${data[i].id})"><i class="la la-heart"></i> Like</a>
                                                 <img src="images/liked-img.png" alt="">
-                                                <span id="`+ i + 10 +`"></span>
+                                                <span id="`+ i + `"></span>
                                                 </li>
                                                 <li><a   onclick="checkView(` + data[i].id + `),showCommentByPost(` + data[i].id + `)" title="" class="com" >` + data1.length + `<img src="images/com.png" alt="">
                                                 </a></li>
@@ -682,6 +676,16 @@ console.log(data)
                                                 </div>
 </div>
                                                 `;
+                                                            $.ajax({
+                                                                type: "GET",
+                                                                url: "http://localhost:8080/api/like/" + data[i].id,
+                                                                headers: {"Authorization": 'Bearer ' + localStorage.getItem("token")},
+                                                                success: function (data2) {
+                                                                    console.log(data2.length)
+                                                                    document.getElementById(``+ i +``).innerHTML = data2.length;
+                                                                    console.log(data2.length)
+                                                                }
+                                                            })
 
                                                             document.getElementById("post2").innerHTML = str;
                                                         }

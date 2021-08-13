@@ -1,10 +1,7 @@
 package com.example.casestudymodule4.controller;
 
 import com.example.casestudymodule4.model.UploadPost;
-import com.example.casestudymodule4.model.entity.Image;
-import com.example.casestudymodule4.model.entity.ImageUser;
-import com.example.casestudymodule4.model.entity.Post;
-import com.example.casestudymodule4.model.entity.User;
+import com.example.casestudymodule4.model.entity.*;
 import com.example.casestudymodule4.service.imageUse.IImageUseService;
 import com.example.casestudymodule4.service.user.IUserService;
 import org.slf4j.Logger;
@@ -65,10 +62,10 @@ public class UserController {
     }
     private static String UPLOAD_DIR = "/img";
     @PutMapping("/updateImg/{id}")
-    public ResponseEntity<?> multiUploadFileModel(@PathVariable Long id,@ModelAttribute UploadPost form) {
+    public ResponseEntity<?> multiUploadFileModel(@PathVariable Long id,@ModelAttribute UploadImageUser form) {
         Optional<User> user = userService.findById(id);
-        ImageUser imageUser = iImageUseService.findByUserIdAndStatus(id);
-        imageUser.setStatus(3);
+//        ImageUser imageUser = iImageUseService.findByUserIdAndStatus(id);
+//        imageUser.setStatus(3);
         logger.debug("Multiple file upload! With UploadModel");
         String result = null;
         try {

@@ -19,17 +19,27 @@
 </head>
 
 <script onload="checkTonke()">
-    function showCommentByPost1(idPost, status) {
+    function showCommentByPost1(idPost, status,data) {
         console.log(status)
-        if (status == 2) {
+        console.log(data)
+        if (status == 2 || data == 0) {
             alert("không có bình luận nào")
-        } else {
-            window.location.href = "forum-post-view.html";
-            localStorage.setItem("idPost_comment", idPost)
-            console.log(idPost)
-        }
-    }
+            } else {
+                window.location.href = "forum-post-view.html";
+                localStorage.setItem("idPost_comment", idPost)
+                console.log(idPost)
+            }
 
+    }
+    function checkLike(id) {
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:8080/api/like/create/" + id + "/" + localStorage.getItem("id"),
+            success: function (){
+                showPostUser()
+            }
+        })
+    }
     function showPostUser() {
         $.ajax({
             type: "GET",
@@ -56,19 +66,23 @@
                     for (let i = 0; i < data.length; i++) {
 
                         let datePost = new Date(data[i].datePost)
-
-                        if ((datePost.getSeconds() < date1.getSeconds()) && (datePost.getMinutes() == date1.getMinutes()) && (datePost.getHours() == date1.getHours()) && (datePost.getDate() == date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
-                            datePost1 = " " + (date1.getSeconds() - datePost.getSeconds()) + " giây trước"
-                        } else if ((datePost.getMinutes() < date1.getMinutes()) && (datePost.getHours() == date1.getHours()) && (datePost.getDate() == date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
-                            datePost1 = " " + (datePost.getMinutes() - datePost.getMinutes()) + " phút trước";
-                        } else if ((datePost.getHours() < date1.getHours()) && (datePost.getDate() == date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
-                            datePost1 = " " + (date1.getHours() - datePost.getHours()) + " giờ trước"
-                        } else if ((datePost.getDate() < date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
-                            datePost1 = " " + (date1.getDay() - datePost.getDay()) + " ngày trước";
-                        } else {
-                            datePost1 = " " + (date1.getFullYear() - datePost.getFullYear()) + " năm trước";
-                        }
-                        str += `<div class="post-bar">
+                        $.ajax({
+                            type: "GET",
+                            url: "http://localhost:8080/api/Comment/showComment/" + data[i].id,
+                            headers: {"Authorization": 'Bearer ' + localStorage.getItem("token")},
+                            success: function (data1) {
+                                if ((datePost.getSeconds() < date1.getSeconds()) && (datePost.getMinutes() == date1.getMinutes()) && (datePost.getHours() == date1.getHours()) && (datePost.getDate() == date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
+                                    datePost1 = " " + (date1.getSeconds() - datePost.getSeconds()) + " giây trước"
+                                } else if ((datePost.getMinutes() < date1.getMinutes()) && (datePost.getHours() == date1.getHours()) && (datePost.getDate() == date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
+                                    datePost1 = " " + (datePost.getMinutes() - datePost.getMinutes()) + " phút trước";
+                                } else if ((datePost.getHours() < date1.getHours()) && (datePost.getDate() == date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
+                                    datePost1 = " " + (date1.getHours() - datePost.getHours()) + " giờ trước"
+                                } else if ((datePost.getDate() < date1.getDate()) && (datePost.getFullYear() == date1.getFullYear())) {
+                                    datePost1 = " " + (date1.getDay() - datePost.getDay()) + " ngày trước";
+                                } else {
+                                    datePost1 = " " + (date1.getFullYear() - datePost.getFullYear()) + " năm trước";
+                                }
+                                str += `<div class="post-bar">
                                                                                     <div class="post_topbar">
                                                                                         <div class="usy-dt">
                                                                                             <img src="http://via.placeholder.com/50x50" alt="">
@@ -98,22 +112,36 @@
                                                                                     <div class="job-status-bar">
                                                                                         <ul class="like-com">
                                                                                             <li>
-                                                                                                <a href="#"><i class="la la-heart"></i> Like</a>
+                                                                                                 <a  onclick="checkLike(${data[i].id})"><i class="la la-heart"></i> Like</a>
                                                                                                 <img src="images/liked-img.png" alt="">
-                                                                                                <span>25</span>
+                                                                                                <span id="`+ i +`"></span>
                                                                                             </li>
-                                                                                            <li><a onclick="showCommentByPost1(` + data[i].id + `,` + data[i].status + `)" title="" class="com"><img src="images/com.png"
-                                                                                                                                      alt=""> Comment 15</a>
+                                                                                            <li><a onclick="showCommentByPost1(` + data[i].id + `,` + data[i].status + `,`+ data1.length +`)" title="" class="com"><img src="images/com.png"
+                                                                                                                                      alt=""> ` + data1.length + `</a>
                                                                                             </li>
                                                                                         </ul>
                                                                                         <a><i class="la la-eye"></i>` + data[i].view + `</a>
                                                                                     </div>
                                                                                 </div>`
+                                $.ajax({
+                                    type: "GET",
+                                    url: "http://localhost:8080/api/like/" + data[i].id,
+                                    headers: {"Authorization": 'Bearer ' + localStorage.getItem("token")},
+                                    success: function (data2) {
+                                        console.log(data2.length)
+                                        document.getElementById(``+ i +``).innerHTML = data2.length;
+                                        console.log(data2.length)
+                                    }
+                                })
+
+                                document.getElementById("showPost").innerHTML = str;
+                            }
+                        })
+
+
                     }
-                    document.getElementById("showPost").innerHTML = str;
                 }
             }
-
         })
 
     }
@@ -776,6 +804,8 @@
                                             url: "http://localhost:8080/api/" + localStorage.getItem("idFriend"),
                                             headers: {"Authorization": 'Bearer ' + localStorage.getItem("token")},
                                             success: function (data) {
+                                                let date = new Date(data.dateOfBirth);
+                                                let str1 = date.getDay() + "-" + date.getMonth() + "-" + date.getFullYear();
                                                 console.log(data.fullName)
                                                 let str = "";
                                                 str +=
@@ -801,7 +831,7 @@
 					<div className="user-profile-ov">
 						<h3>Date of birth</h3>
 
-						<span style="color: red">` + data.dateOfBirth + `</span>
+						<span style="color: red">` + str1 + `</span>
 
 					</div>
 					<!--user-profile-ov end-->
@@ -812,7 +842,7 @@
                                             }
                                         })
                                     }
-                                    }</script>
+                                    </script>
                                 <div class="product-feed-tab" id="info-dd">
 
                                     <div class="user-profile-ov" id="show">
